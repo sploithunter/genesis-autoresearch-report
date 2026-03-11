@@ -1143,3 +1143,26 @@ Total cost for all 3 tasks this iteration: $0.018.
 **14 consecutive 3/3 passes (iterations 8-21, 42/42 tasks). Overall: 98% (56/57).**
 
 ---
+
+## Haiku Iteration 22
+
+**No tool changes.**
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 61.8s | $0.0069 | 1 |
+| LD-07 | **PASS** | 115.7s | $0.0075 | 1 |
+| LQ-01 | **PASS** | 281.3s | $0.0133 | 2 |
+
+**15 consecutive 3/3 passes (iterations 8-22, 45/45 tasks). Overall: 98% (59/60).**
+
+### Haiku Milestone: 15 Consecutive Perfect Runs
+
+| Task | Baseline | With Tools | Consecutive Passes |
+|------|----------|-----------|-------------------|
+| LR-01 | **0% (0/3)** | **100% (16/16)** | **16** |
+| LD-07 | **0% (0/3)** | **100% (22/22)** | **22** |
+| LQ-01 | 100% (3/3) | **94% (15/16)** | **15** |
+| **Overall** | **33%** | **98% (59/60)** | **15 × 3/3** |
+
+---
