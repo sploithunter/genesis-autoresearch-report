@@ -28,6 +28,8 @@
 - Tools must remain general-purpose (not task-specific hints)
 - Do NOT modify harness-bench code
 - All tools must be Genesis services on domain 55
+- Commit all changes to branch `autoresearch/experiment-v1` at the end of every loop iteration
+- Every iteration must be documented in ITERATION_LOG.md before committing
 
 ## What to Modify Next (based on evaluation)
 If tools aren't being used:
