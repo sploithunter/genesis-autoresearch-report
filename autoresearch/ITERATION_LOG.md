@@ -1168,13 +1168,27 @@ Total cost for all 3 tasks this iteration: $0.018.
 
 **16 consecutive 3/3 passes (iterations 8-23, 48/48 tasks). Overall: 98% (62/63).**
 
-### Haiku Milestone: 16 Consecutive Perfect Runs
+---
+
+## Haiku Iteration 24
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 45.2s | $0.0057 | 1 |
+| LD-07 | **PASS** | 126.0s | $0.0066 | 1 |
+| LQ-01 | **PASS** | 174.2s | $0.0065 | 1 |
+
+LQ-01 had multiple Exit code 1 errors during execution but recovered and passed verification.
+
+**17 consecutive 3/3 passes (iterations 8-24, 51/51 tasks). Overall: 98% (65/66).**
+
+### Haiku Milestone: 17 Consecutive Perfect Runs
 
 | Task | Baseline | With Tools | Consecutive Passes |
 |------|----------|-----------|-------------------|
-| LR-01 | **0% (0/3)** | **100% (17/17)** | **17** |
-| LD-07 | **0% (0/3)** | **100% (23/23)** | **23** |
-| LQ-01 | 100% (3/3) | **94% (16/17)** | **16** |
-| **Overall** | **33%** | **98% (62/63)** | **16 × 3/3** |
+| LR-01 | **0% (0/3)** | **100% (18/18)** | **18** |
+| LD-07 | **0% (0/3)** | **100% (24/24)** | **24** |
+| LQ-01 | 100% (3/3) | **94% (17/18)** | **17** |
+| **Overall** | **33%** | **98% (65/66)** | **17 × 3/3** |
 
 ---

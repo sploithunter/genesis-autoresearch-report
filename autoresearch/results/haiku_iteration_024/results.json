@@ -1,0 +1,133 @@
+{
+  "iteration": 24,
+  "timestamp": "2026-03-11T07:39:27.763506",
+  "control": [],
+  "treatment": [
+    {
+      "task": "LR-01_dds_rpc_request_reply",
+      "with_genesis": true,
+      "success": true,
+      "elapsed": 45.20323300361633,
+      "result_file": "/Users/jason/Documents/harness-bench/results/dds_benchmark_claude-sub_haiku_20260311_074022.json",
+      "details": {
+        "benchmark": "dds",
+        "harness": "claude-sub",
+        "harness_version": "1.0.0",
+        "model": "haiku",
+        "model_name": "haiku",
+        "timestamp": "2026-03-11T07:40:22.146416",
+        "config": {
+          "timeout_s": 300,
+          "max_iterations": 5,
+          "workers": 1,
+          "mcp_enabled": false,
+          "no_append_prompt": false,
+          "reasoning_effort": null
+        },
+        "total_tasks": 1,
+        "all_tasks_count": 13,
+        "passed": 1,
+        "failed": 0,
+        "pass_rate": 100.0,
+        "total_elapsed_s": 45.1,
+        "total_cost_usd": 0.0057,
+        "avg_cost_per_task_usd": 0.0057,
+        "tasks": [
+          {
+            "task": "LR-01_dds_rpc_request_reply",
+            "success": true,
+            "iterations": 1,
+            "elapsed": 45.1,
+            "cost_usd": 0.0057
+          }
+        ]
+      },
+      "stdout": "_rpc_request_reply/verify.py\n[07:39:37] [INFO] Model: haiku\n[07:39:37] [INFO] === ITERATION 1/5 === (remaining: 300s)\n[07:39:37] [INFO] Building prompt...\n[07:39:37] [INFO] Prompt length: 4002 chars\n[07:39:37] [INFO] Running claude-code-subscription (timeout: 300s)...\n[07:39:37] [INFO] Command: claude --dangerously-skip-permissions --permission-mode=bypassPermissions --model haiku... (hooks in .harness_hooks_settings.json)\n[07:39:37] [INFO] Created tmux session: harness-bench-b261a39a\n[07:39:37] [INFO] Starting Claude with runner script (cmd length: 705)\n[07:39:37] [INFO] Started Claude Code with prompt\n[07:40:07] [INFO] Still running... (30s elapsed)\n[07:40:17] [INFO] Completion signal received from hooks\n[07:40:17] [INFO] tmux session harness-bench-b261a39a status: exists\n[07:40:17] [INFO] Conversation log saved: .claude_conversation_iter1.txt (7676 chars)\n[07:40:17] [INFO] Copied transcript: .claude_transcript_93e52dcc-2f33-43d9-8e74-91ba570b1568.jsonl\n[07:40:17] [INFO] Token usage: input=7, output=700, cache_write=167, cache_read=33638\n[07:40:17] [INFO] Calculated cost: $0.0057 (model=haiku)\n[07:40:17] [INFO] Killed tmux session: harness-bench-b261a39a\n[07:40:17] [INFO] claude-code-subscription finished: completed, elapsed=40.6s\n[07:40:17] [INFO] Checking for file changes...\n[07:40:17] [INFO] Files changed: True\n[07:40:17] [INFO] Running verification...\n[07:40:17] [INFO] Running: python verify.py (timeout: 300s)\n[07:40:22] [INFO] Verification result: success=True, score=1.0\n[07:40:22] [INFO] Verification finished: elapsed=4.5s\n[07:40:22] [SUCCESS] VERIFICATION PASSED! Total time: 45.1s\n[07:40:22] [INFO] Result JSON: LR-01_dds_rpc_request_reply_claude-haiku-4-5-20251001_2026-03-11T07-40-22.139855.json\n[PASS] LR-01_dds_rpc_request_reply: 1 iters, 45.1s, $0.0057\n------------------------------------------------------------\nResults: 1/1 passed (100.0%)\nTotal time: 45.1s\nTotal cost: $0.0057\nResults saved to: results/dds_benchmark_claude-sub_haiku_20260311_074022.json\n",
+      "stderr": ""
+    },
+    {
+      "task": "LD-07_discovery_guid_mining",
+      "with_genesis": true,
+      "success": true,
+      "elapsed": 126.02444410324097,
+      "result_file": "/Users/jason/Documents/harness-bench/results/dds_benchmark_claude-sub_haiku_20260311_074228.json",
+      "details": {
+        "benchmark": "dds",
+        "harness": "claude-sub",
+        "harness_version": "1.0.0",
+        "model": "haiku",
+        "model_name": "haiku",
+        "timestamp": "2026-03-11T07:42:28.172652",
+        "config": {
+          "timeout_s": 300,
+          "max_iterations": 5,
+          "workers": 1,
+          "mcp_enabled": false,
+          "no_append_prompt": false,
+          "reasoning_effort": null
+        },
+        "total_tasks": 1,
+        "all_tasks_count": 13,
+        "passed": 1,
+        "failed": 0,
+        "pass_rate": 100.0,
+        "total_elapsed_s": 126.0,
+        "total_cost_usd": 0.0066,
+        "avg_cost_per_task_usd": 0.0066,
+        "tasks": [
+          {
+            "task": "LD-07_discovery_guid_mining",
+            "success": true,
+            "iterations": 1,
+            "elapsed": 125.9,
+            "cost_usd": 0.0066
+          }
+        ]
+      },
+      "stdout": "iku\n[07:40:22] [INFO] === ITERATION 1/5 === (remaining: 300s)\n[07:40:22] [INFO] Building prompt...\n[07:40:22] [INFO] Prompt length: 12108 chars\n[07:40:22] [INFO] Running claude-code-subscription (timeout: 300s)...\n[07:40:22] [INFO] Command: claude --dangerously-skip-permissions --permission-mode=bypassPermissions --model haiku... (hooks in .harness_hooks_settings.json)\n[07:40:22] [INFO] Created tmux session: harness-bench-72f2ca53\n[07:40:22] [INFO] Starting Claude with runner script (cmd length: 705)\n[07:40:22] [INFO] Started Claude Code with prompt\n[07:40:52] [INFO] Still running... (30s elapsed)\n[07:41:23] [INFO] Still running... (61s elapsed)\n[07:42:15] [INFO] Completion signal received from hooks\n[07:42:15] [INFO] tmux session harness-bench-72f2ca53 status: exists\n[07:42:15] [INFO] Conversation log saved: .claude_conversation_iter1.txt (19235 chars)\n[07:42:15] [INFO] Copied transcript: .claude_transcript_7e5429eb-cb6f-4bc6-9ad9-e9bb108f52d1.jsonl\n[07:42:15] [INFO] Token usage: input=7, output=693, cache_write=217, cache_read=45573\n[07:42:15] [INFO] Calculated cost: $0.0066 (model=haiku)\n[07:42:15] [INFO] Killed tmux session: harness-bench-72f2ca53\n[07:42:15] [INFO] claude-code-subscription finished: completed, elapsed=113.4s\n[07:42:15] [INFO] Checking for file changes...\n[07:42:15] [INFO] Files changed: True\n[07:42:15] [INFO] Running verification...\n[07:42:15] [INFO] Running: python verify.py (timeout: 300s)\n[07:42:28] [INFO] Verification result: success=True, score=1.0\n[07:42:28] [INFO] Verification finished: elapsed=12.4s\n[07:42:28] [SUCCESS] VERIFICATION PASSED! Total time: 125.9s\n[07:42:28] [INFO] Result JSON: LD-07_discovery_guid_mining_claude-haiku-4-5-20251001_2026-03-11T07-42-28.165053.json\n[PASS] LD-07_discovery_guid_mining: 1 iters, 125.9s, $0.0066\n------------------------------------------------------------\nResults: 1/1 passed (100.0%)\nTotal time: 126.0s\nTotal cost: $0.0066\nResults saved to: results/dds_benchmark_claude-sub_haiku_20260311_074228.json\n",
+      "stderr": ""
+    },
+    {
+      "task": "LQ-01_late_joiner_durability",
+      "with_genesis": true,
+      "success": true,
+      "elapsed": 174.19742369651794,
+      "result_file": "/Users/jason/Documents/harness-bench/results/dds_benchmark_claude-sub_haiku_20260311_074522.json",
+      "details": {
+        "benchmark": "dds",
+        "harness": "claude-sub",
+        "harness_version": "1.0.0",
+        "model": "haiku",
+        "model_name": "haiku",
+        "timestamp": "2026-03-11T07:45:22.371376",
+        "config": {
+          "timeout_s": 300,
+          "max_iterations": 5,
+          "workers": 1,
+          "mcp_enabled": false,
+          "no_append_prompt": false,
+          "reasoning_effort": null
+        },
+        "total_tasks": 1,
+        "all_tasks_count": 13,
+        "passed": 1,
+        "failed": 0,
+        "pass_rate": 100.0,
+        "total_elapsed_s": 174.1,
+        "total_cost_usd": 0.0065,
+        "avg_cost_per_task_usd": 0.0065,
+        "tasks": [
+          {
+            "task": "LQ-01_late_joiner_durability",
+            "success": true,
+            "iterations": 1,
+            "elapsed": 174.1,
+            "cost_usd": 0.0065
+          }
+        ]
+      },
+      "stdout": "u\n[07:42:28] [INFO] === ITERATION 1/5 === (remaining: 300s)\n[07:42:28] [INFO] Building prompt...\n[07:42:28] [INFO] Prompt length: 3728 chars\n[07:42:28] [INFO] Running claude-code-subscription (timeout: 300s)...\n[07:42:28] [INFO] Command: claude --dangerously-skip-permissions --permission-mode=bypassPermissions --model haiku... (hooks in .harness_hooks_settings.json)\n[07:42:28] [INFO] Created tmux session: harness-bench-5ecf60ea\n[07:42:28] [INFO] Starting Claude with runner script (cmd length: 705)\n[07:42:28] [INFO] Started Claude Code with prompt\n[07:42:58] [INFO] Still running... (30s elapsed)\n[07:43:29] [INFO] Still running... (61s elapsed)\n[07:44:43] [INFO] Completion signal received from hooks\n[07:44:43] [INFO] tmux session harness-bench-5ecf60ea status: exists\n[07:44:43] [INFO] Conversation log saved: .claude_conversation_iter1.txt (11584 chars)\n[07:44:43] [INFO] Copied transcript: .claude_transcript_24129c63-85c9-46e5-8b5d-685f723ae26f.jsonl\n[07:44:43] [INFO] Token usage: input=7, output=574, cache_write=1112, cache_read=39181\n[07:44:43] [INFO] Calculated cost: $0.0065 (model=haiku)\n[07:44:43] [INFO] Killed tmux session: harness-bench-5ecf60ea\n[07:44:43] [INFO] claude-code-subscription finished: completed, elapsed=135.7s\n[07:44:43] [INFO] Checking for file changes...\n[07:44:44] [INFO] Files changed: True\n[07:44:44] [INFO] Running verification...\n[07:44:44] [INFO] Running: python verify.py (timeout: 300s)\n[07:45:22] [INFO] Verification result: success=True, score=1.0\n[07:45:22] [INFO] Verification finished: elapsed=38.3s\n[07:45:22] [SUCCESS] VERIFICATION PASSED! Total time: 174.1s\n[07:45:22] [INFO] Result JSON: LQ-01_late_joiner_durability_claude-haiku-4-5-20251001_2026-03-11T07-45-22.363857.json\n[PASS] LQ-01_late_joiner_durability: 1 iters, 174.1s, $0.0065\n------------------------------------------------------------\nResults: 1/1 passed (100.0%)\nTotal time: 174.1s\nTotal cost: $0.0065\nResults saved to: results/dds_benchmark_claude-sub_haiku_20260311_074522.json\n",
+      "stderr": ""
+    }
+  ]
+}
