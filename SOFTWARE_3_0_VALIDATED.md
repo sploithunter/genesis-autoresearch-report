@@ -64,7 +64,7 @@ In 2024, this was aspirational. We had no Genesis framework, no benchmark data, 
 
 ### 2.1 Design
 
-There is a pleasing symmetry here. The Software 3.0 concept was inspired by Karpathy's Software 2.0. The experiment that validated it was inspired by Karpathy's autoresearch -- his 2025 project demonstrating that AI agents can autonomously conduct ML research, running hundreds of experiments overnight in an iterative loop of hypothesis, modification, evaluation, and improvement. Both threads trace back to Karpathy, converging in this experiment.
+There is a pleasing symmetry here. The Software 3.0 concept was inspired by Karpathy's Software 2.0. The experiment that validated it was inspired by Karpathy's autoresearch -- his 2026 project demonstrating that AI agents can autonomously conduct ML research, running hundreds of experiments overnight in an iterative loop of hypothesis, modification, evaluation, and improvement. Both threads trace back to Karpathy, converging in this experiment.
 
 The Genesis AutoResearch experiment was designed to test whether the Software 3.0 loop actually works in practice. Where Karpathy's autoresearch optimizes model training code, ours optimizes *tool infrastructure* -- the distributed services that make AI agents more capable. We built a system where:
 
@@ -270,7 +270,7 @@ For context, one is more likely to win a national lottery twice than to observe 
 
 ## 7. Limitations and Future Work
 
-**Limited task diversity.** The experiment tested three DDS tasks. While the results are strong within this scope, we have not yet demonstrated generalization to DDS tasks outside the original three, or to non-DDS domains.
+**Limited task diversity.** The experiment tested three DDS tasks. While the results are strong within this scope, we have not yet demonstrated generalization to DDS tasks outside the original three, or to non-DDS domains. We believe that this approach would likely succeed in other coding tasks but further work would be needed to explore a general solution.
 
 **Baseline sample size.** Baseline measurements used small sample sizes (3-9 runs). Larger baselines would strengthen the comparison, though the 0% baseline on LD-07 and LR-01 (Haiku) leaves little ambiguity.
 
@@ -323,7 +323,7 @@ That is Software 3.0.
 
 2. **Karpathy, A. "Software 2.0."** Medium, November 2017. https://karpathy.medium.com/software-2-0-a64152b37c35 -- The foundational observation that neural networks represent a new programming paradigm where optimization replaces explicit coding.
 
-3. **Karpathy, A. "Autoresearch."** X/Twitter, February 2025. https://x.com/karpathy/status/1886192184808149383 -- The concept of AI systems autonomously conducting research, which inspired the experiment design.
+3. **Karpathy, A. "Autoresearch."** X/Twitter, March 2026. https://x.com/karpathy/status/1886192184808149383 -- The concept of AI systems autonomously conducting research, which inspired the experiment design.
 
 4. **AFWERX D2P2 Grant** -- Department of the Air Force funding supporting Genesis framework development for distributed autonomous systems.
 
