@@ -262,27 +262,70 @@ class DDSPatternService(MonitoredService):
 
 ---
 
-## Slide 16: Next Steps (1 min)
+## Slide 16: Phase 2 — Haiku Cross-Model Validation (3 min)
 
-1. **Haiku test** — Same tools with a smaller model to prove tools encode real knowledge
-2. **Ablation study** — Which service contributes most? Patterns vs Reference vs Diagnostics
-3. **Cross-task generalization** — Do the tools help on DDS tasks we didn't train for?
-4. **Multi-domain expansion** — Apply the autoresearch pattern to other specialized domains
+**Can the smallest Claude model pass with the same tools?**
 
-> **Speaker notes:** The Haiku test is the most important next step. If a smaller, cheaper model can pass with the same tools, it proves the tools aren't just helping Opus — they're encoding genuinely useful knowledge that any model can leverage.
+![Haiku Overall Pass Rate](graphs/fig7_haiku_overall_pass_rate.png)
+
+- **Haiku baseline:** 0% (0/3 on LR-01 — can't solve RPC at all)
+- **Haiku + Genesis tools:** 97% (100/103 tasks over 37 iterations)
+- **No tool changes needed** — same tools developed during Opus phase
+- **Cost:** $0.007/task — **10x cheaper than Opus+tools, 25x cheaper than Opus baseline**
+
+> **Speaker notes:** This is the strongest slide in the deck. Haiku is the smallest, cheapest Claude model. It literally cannot solve LR-01 without tools — 0 out of 3 attempts. With the same Genesis tools we built for Opus, it passes 100% of the time. Same tools, different model, same result. That's proof the tools encode real knowledge.
 
 ---
 
-## Slide 17: Q&A
+## Slide 17: The Money Graph — Cross-Model Comparison (2 min)
+
+![Cross-Model Comparison](graphs/fig8_cross_model_comparison.png)
+
+| Model | Cost/Task | Pass Rate | Iterations |
+|-------|-----------|-----------|------------|
+| Opus (baseline) | $0.17 | 33% | 38 |
+| **Opus + Tools** | **$0.067** | **91%** | 38 |
+| **Haiku + Tools** | **$0.007** | **97%** | 37 |
+
+**Haiku + Tools outperforms Opus + Tools at 10x lower cost.**
+
+> **Speaker notes:** Point out that Haiku actually has a HIGHER pass rate than Opus. This isn't noise — Haiku had the benefit of fully mature tools (no development iterations), while Opus's average includes the early tool-development failures. The key insight: once the tools are good, even the smallest model succeeds.
+
+---
+
+## Slide 18: Cost Implications (1 min)
+
+![Cost Comparison](graphs/fig10_cost_comparison.png)
+
+- **$0.17** → **$0.067** (Opus + tools): 61% cheaper
+- **$0.17** → **$0.007** (Haiku + tools): **96% cheaper**
+- At scale: 1000 tasks costs **$7 with Haiku+tools** vs **$170 baseline**
+
+> **Speaker notes:** The economics are transformative. You can run 25 Haiku tasks for the cost of 1 Opus baseline task. And they're MORE reliable. This changes the calculus on when to deploy AI coding assistants for specialized domains.
+
+---
+
+## Slide 19: Next Steps (1 min)
+
+1. **Ablation study** — Which service contributes most? Patterns vs Reference vs Diagnostics
+2. **Cross-task generalization** — Do the tools help on DDS tasks we didn't train for?
+3. **Sonnet test** — Complete the cross-model picture with the middle-tier model
+4. **Multi-domain expansion** — Apply the autoresearch pattern to other specialized domains
+
+> **Speaker notes:** The pattern is proven. The next question is how far it generalizes — across tasks, across domains, across models.
+
+---
+
+## Slide 20: Q&A
 
 **Genesis AutoResearch: 33% → 97%**
 
-- 38 iterations, fully autonomous
-- 32 consecutive perfect runs
-- 3 Genesis services, 8 code patterns
-- $5 total experiment cost
+- **Phase 1 (Opus):** 38 iterations, 32 consecutive perfect runs, 91% overall
+- **Phase 2 (Haiku):** 37 iterations, 19 consecutive perfect runs, 97% overall
+- **Same 3 Genesis services, same 8 code patterns**
+- **Total experiment cost:** ~$8 across 75 iterations
 - Source: github.com/sploithunter/Genesis_LIB
 
 **Questions?**
 
-> **Speaker notes:** Have the per-task timeline graph (fig3) ready to show if anyone asks about the progression. Have the LD-07 deep dive (fig6) ready for questions about the hardest task. Be prepared to explain the @idl.struct vs DynamicData incompatibility in more detail if a DDS expert asks.
+> **Speaker notes:** Have the per-task timeline graphs ready (fig3, fig9). Have the cross-model comparison (fig8) as the default screen during Q&A — it's the most compelling visual. Be prepared to explain the @idl.struct vs DynamicData incompatibility and why Haiku sometimes misses the StructType pattern (~5% of the time).

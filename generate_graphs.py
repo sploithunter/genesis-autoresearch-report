@@ -36,6 +36,10 @@ def load_data():
     with open('data/iteration_results.json') as f:
         return json.load(f)
 
+def load_haiku_data():
+    with open('data/haiku_iteration_results.json') as f:
+        return json.load(f)
+
 def fig1_overall_pass_rate(data, outdir):
     """Main hero graph: overall pass rate over iterations."""
     iters = []
@@ -359,12 +363,230 @@ def fig6_ld07_deep_dive(data, outdir):
     plt.savefig(outdir / 'fig6_ld07_deep_dive.png')
     plt.close()
 
+def fig7_haiku_overall_pass_rate(haiku_data, outdir):
+    """Haiku overall cumulative pass rate over 37 iterations."""
+    iters = []
+    pass_rates = []
+
+    for d in haiku_data['iterations']:
+        iters.append(d['iter'])
+        total = 0
+        passed = 0
+        for prev in haiku_data['iterations'][:haiku_data['iterations'].index(d)+1]:
+            for task in ['LR-01', 'LD-07', 'LQ-01']:
+                if task in prev:
+                    total += 1
+                    if prev[task]:
+                        passed += 1
+        pass_rates.append(passed / total * 100 if total > 0 else 0)
+
+    fig, ax = plt.subplots(figsize=(14, 6))
+    fig.patch.set_facecolor('white')
+    ax.set_facecolor(COLORS['bg'])
+
+    # Baseline line (Haiku baseline: 0% — all 3 LR-01 runs failed)
+    ax.axhline(y=0, color=COLORS['baseline'], linestyle='--', linewidth=2, alpha=0.8, label='Haiku Baseline (0%)')
+
+    # Treatment line
+    ax.plot(iters, pass_rates, color='#3498db', linewidth=2.5, marker='o', markersize=4, label='Haiku + Genesis Tools')
+
+    # Fill between
+    ax.fill_between(iters, 0, pass_rates, alpha=0.15, color='#3498db')
+
+    # Annotations
+    ax.annotate('LR-01 added\n(iter 7)', xy=(7, pass_rates[6]), xytext=(12, 75),
+                arrowprops=dict(arrowstyle='->', color=COLORS['accent'], lw=1.5),
+                fontsize=10, ha='center', color=COLORS['accent'], fontweight='bold')
+
+    ax.annotate(f'Final: {pass_rates[-1]:.0f}%', xy=(37, pass_rates[-1]), xytext=(32, 80),
+                arrowprops=dict(arrowstyle='->', color=COLORS['accent'], lw=1.5),
+                fontsize=10, ha='center', color=COLORS['accent'], fontweight='bold')
+
+    ax.set_xlabel('Iteration')
+    ax.set_ylabel('Cumulative Pass Rate (%)')
+    ax.set_title('Haiku Phase: Overall Pass Rate Over 37 Iterations\nSmallest Claude model + same Genesis tools')
+    ax.set_ylim(0, 105)
+    ax.set_xlim(0.5, 37.5)
+    ax.legend(loc='lower right', framealpha=0.9)
+    ax.grid(True, alpha=0.3, color=COLORS['grid'])
+
+    plt.savefig(outdir / 'fig7_haiku_overall_pass_rate.png')
+    plt.close()
+
+
+def fig8_cross_model_comparison(opus_data, haiku_data, outdir):
+    """Side-by-side Opus vs Haiku comparison — the money graph."""
+    tasks = ['LR-01\n(RPC)', 'LD-07\n(GUID Mining)', 'LQ-01\n(Late Joiner)', 'Overall']
+
+    # Compute Opus stats
+    opus_lr01 = [d.get('LR-01') for d in opus_data['iterations'] if 'LR-01' in d]
+    opus_ld07 = [d.get('LD-07') for d in opus_data['iterations'] if 'LD-07' in d]
+    opus_lq01 = [d.get('LQ-01') for d in opus_data['iterations'] if 'LQ-01' in d]
+    opus_rates = [
+        sum(opus_lr01) / len(opus_lr01) * 100 if opus_lr01 else 100,
+        sum(opus_ld07) / len(opus_ld07) * 100,
+        sum(opus_lq01) / len(opus_lq01) * 100,
+        0  # placeholder
+    ]
+    opus_total = sum(opus_lr01) + sum(opus_ld07) + sum(opus_lq01)
+    opus_count = len(opus_lr01) + len(opus_ld07) + len(opus_lq01)
+    opus_rates[3] = opus_total / opus_count * 100
+
+    # Compute Haiku stats
+    haiku_lr01 = [d.get('LR-01') for d in haiku_data['iterations'] if 'LR-01' in d]
+    haiku_ld07 = [d.get('LD-07') for d in haiku_data['iterations'] if 'LD-07' in d]
+    haiku_lq01 = [d.get('LQ-01') for d in haiku_data['iterations'] if 'LQ-01' in d]
+    haiku_rates = [
+        sum(haiku_lr01) / len(haiku_lr01) * 100 if haiku_lr01 else 0,
+        sum(haiku_ld07) / len(haiku_ld07) * 100,
+        sum(haiku_lq01) / len(haiku_lq01) * 100,
+        0
+    ]
+    haiku_total = sum(haiku_lr01) + sum(haiku_ld07) + sum(haiku_lq01)
+    haiku_count = len(haiku_lr01) + len(haiku_ld07) + len(haiku_lq01)
+    haiku_rates[3] = haiku_total / haiku_count * 100
+
+    # Baseline (combined)
+    baseline_rates = [33.3, 0.0, 66.7, 33.3]
+
+    x = np.arange(len(tasks))
+    width = 0.25
+
+    fig, ax = plt.subplots(figsize=(12, 7))
+    fig.patch.set_facecolor('white')
+    ax.set_facecolor(COLORS['bg'])
+
+    bars1 = ax.bar(x - width, baseline_rates, width, label='Baseline (No Tools)',
+                   color=COLORS['baseline'], alpha=0.85, edgecolor='white', linewidth=1.5)
+    bars2 = ax.bar(x, opus_rates, width, label='Opus + Genesis Tools',
+                   color=COLORS['treatment'], alpha=0.85, edgecolor='white', linewidth=1.5)
+    bars3 = ax.bar(x + width, haiku_rates, width, label='Haiku + Genesis Tools',
+                   color='#3498db', alpha=0.85, edgecolor='white', linewidth=1.5)
+
+    # Value labels
+    for bars, vals, color in [(bars1, baseline_rates, COLORS['baseline']),
+                               (bars2, opus_rates, '#27ae60'),
+                               (bars3, haiku_rates, '#2980b9')]:
+        for bar, val in zip(bars, vals):
+            ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() + 1.5,
+                    f'{val:.0f}%', ha='center', va='bottom', fontweight='bold',
+                    fontsize=9, color=color)
+
+    ax.set_ylabel('Pass Rate (%)')
+    ax.set_title('Cross-Model Validation: Same Tools, Different Models\nGenesis tools encode genuinely useful knowledge', fontweight='bold')
+    ax.set_xticks(x)
+    ax.set_xticklabels(tasks)
+    ax.set_ylim(0, 118)
+    ax.legend(loc='upper left', framealpha=0.9)
+    ax.grid(True, axis='y', alpha=0.3, color=COLORS['grid'])
+
+    plt.savefig(outdir / 'fig8_cross_model_comparison.png')
+    plt.close()
+
+
+def fig9_haiku_per_task_timeline(haiku_data, outdir):
+    """Haiku per-task pass/fail timeline — all 3 tasks."""
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(14, 10), sharex=True)
+    fig.patch.set_facecolor('white')
+
+    for ax, task, title, color in [
+        (ax1, 'LR-01', 'LR-01: DDS RPC Request/Reply (Haiku Baseline: 0%)', COLORS['lr01']),
+        (ax2, 'LD-07', 'LD-07: Discovery GUID Mining (Haiku Baseline: N/A)', COLORS['ld07']),
+        (ax3, 'LQ-01', 'LQ-01: Late Joiner Durability (Haiku Baseline: N/A)', COLORS['lq01']),
+    ]:
+        ax.set_facecolor(COLORS['bg'])
+        iters = []
+        results = []
+        for d in haiku_data['iterations']:
+            if task in d:
+                iters.append(d['iter'])
+                results.append(1 if d[task] else 0)
+
+        if not iters:
+            ax.text(0.5, 0.5, 'No data', transform=ax.transAxes, ha='center')
+            ax.set_title(title, fontweight='bold')
+            continue
+
+        colors_list = [COLORS['treatment'] if r else COLORS['baseline'] for r in results]
+        ax.bar(iters, [1]*len(iters), color=colors_list, alpha=0.8, edgecolor='white', linewidth=0.5)
+
+        ax.set_title(title, fontweight='bold')
+        ax.set_ylabel('Result')
+        ax.set_yticks([0, 1])
+        ax.set_yticklabels(['FAIL', 'PASS'])
+        ax.set_ylim(-0.1, 1.3)
+        ax.grid(True, axis='x', alpha=0.3)
+
+        # Stats
+        pass_count = sum(results)
+        total = len(results)
+        consecutive = 0
+        for r in reversed(results):
+            if r == 1:
+                consecutive += 1
+            else:
+                break
+        ax.text(0.98, 0.85, f'{pass_count}/{total} passed ({pass_count/total*100:.0f}%)',
+               transform=ax.transAxes, ha='right', fontsize=11,
+               fontweight='bold', color=COLORS['treatment'],
+               bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
+
+    ax3.set_xlabel('Iteration')
+    fig.suptitle('Haiku Phase: Per-Task Results Over 37 Iterations', fontsize=16, fontweight='bold', y=1.02)
+    plt.tight_layout()
+    plt.savefig(outdir / 'fig9_haiku_per_task_timeline.png')
+    plt.close()
+
+
+def fig10_cost_comparison(opus_data, haiku_data, outdir):
+    """Opus vs Haiku cost comparison."""
+    fig, ax = plt.subplots(figsize=(10, 6))
+    fig.patch.set_facecolor('white')
+    ax.set_facecolor(COLORS['bg'])
+
+    # Compute average costs
+    opus_costs = []
+    for d in opus_data['iterations'][-20:]:
+        for key in ['ld07_cost', 'lq01_cost', 'lr01_cost']:
+            if key in d:
+                opus_costs.append(d[key])
+    haiku_costs = []
+    for d in haiku_data['iterations'][-20:]:
+        for key in ['ld07_cost', 'lq01_cost', 'lr01_cost']:
+            if key in d:
+                haiku_costs.append(d[key])
+
+    categories = ['Baseline\n(Opus, No Tools)', 'Opus\n+ Genesis Tools', 'Haiku\n+ Genesis Tools']
+    costs = [0.17, np.mean(opus_costs), np.mean(haiku_costs)]
+    bar_colors = [COLORS['baseline'], COLORS['treatment'], '#3498db']
+
+    bars = ax.bar(categories, costs, color=bar_colors, alpha=0.85, edgecolor='white', linewidth=2, width=0.5)
+
+    for bar, val in zip(bars, costs):
+        ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() + 0.002,
+                f'${val:.4f}', ha='center', va='bottom', fontweight='bold', fontsize=13)
+
+    # Multiplier annotations
+    ratio = costs[0] / costs[2]
+    ax.annotate(f'{ratio:.0f}x cheaper', xy=(2, costs[2]), xytext=(2, costs[0]*0.6),
+                fontsize=13, ha='center', fontweight='bold', color=COLORS['accent'],
+                arrowprops=dict(arrowstyle='->', color=COLORS['accent'], lw=1.5))
+
+    ax.set_ylabel('Average Cost per Task (USD)')
+    ax.set_title('Cost per Task: Baseline vs Opus vs Haiku\nSame tools, 10x cost reduction with Haiku', fontweight='bold')
+    ax.grid(True, axis='y', alpha=0.3)
+
+    plt.savefig(outdir / 'fig10_cost_comparison.png')
+    plt.close()
+
+
 def main():
     data = load_data()
+    haiku_data = load_haiku_data()
     outdir = Path('graphs')
     outdir.mkdir(exist_ok=True)
 
-    print("Generating graphs...")
+    print("Generating Opus graphs...")
     fig1_overall_pass_rate(data, outdir)
     print("  fig1_overall_pass_rate.png")
     fig2_per_task_pass_rate(data, outdir)
@@ -377,7 +599,17 @@ def main():
     print("  fig5_architecture.png")
     fig6_ld07_deep_dive(data, outdir)
     print("  fig6_ld07_deep_dive.png")
-    print("Done! All graphs saved to graphs/")
+
+    print("\nGenerating Haiku graphs...")
+    fig7_haiku_overall_pass_rate(haiku_data, outdir)
+    print("  fig7_haiku_overall_pass_rate.png")
+    fig8_cross_model_comparison(data, haiku_data, outdir)
+    print("  fig8_cross_model_comparison.png")
+    fig9_haiku_per_task_timeline(haiku_data, outdir)
+    print("  fig9_haiku_per_task_timeline.png")
+    fig10_cost_comparison(data, haiku_data, outdir)
+    print("  fig10_cost_comparison.png")
+    print("\nDone! All graphs saved to graphs/")
 
 if __name__ == '__main__':
     main()
