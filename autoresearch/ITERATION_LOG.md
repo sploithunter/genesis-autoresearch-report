@@ -1250,11 +1250,29 @@ LD-07 had Exit code 127 errors (command not found) but recovered and passed. Bac
 
 **Overall: 96% (78/82). LD-07 pass rate: 93% (27/29).**
 
+---
+
+## Haiku Iteration 30
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 53.7s | $0.0055 | 1 |
+| LD-07 | **PASS** | 115.8s | $0.0073 | 1 |
+| LQ-01 | **PASS** | 92.0s | $0.0056 | 1 |
+
+Clean 3/3 pass. LQ-01 fastest ever at 92.0s. LD-07 bounced back after 2 recent failures.
+
+**Overall: 96% (81/85). New consecutive streak: 2.**
+
+### Haiku Milestone: 30 Iterations Complete
+
 | Task | Baseline | With Tools | Pass Rate |
 |------|----------|-----------|-----------|
-| LR-01 | **0% (0/3)** | **100% (23/23)** | 23 consecutive |
-| LD-07 | **0% (0/3)** | **93% (27/29)** | 0 (2 fails in 3) |
-| LQ-01 | 100% (3/3) | **96% (22/23)** | 22 consecutive |
-| **Overall** | **33%** | **96% (78/82)** | 0 |
+| LR-01 | **0% (0/3)** | **100% (24/24)** | 24 consecutive |
+| LD-07 | **0% (0/3)** | **93% (28/30)** | 2 (rebuilding) |
+| LQ-01 | 100% (3/3) | **96% (23/24)** | 23 consecutive |
+| **Overall** | **33%** | **96% (81/85)** | 2 |
+
+**Cost efficiency:** Avg $0.018/iteration (3 tasks). Haiku+tools ~10x cheaper than Opus+tools.
 
 ---
