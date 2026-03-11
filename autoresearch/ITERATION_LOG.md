@@ -1182,13 +1182,25 @@ LQ-01 had multiple Exit code 1 errors during execution but recovered and passed 
 
 **17 consecutive 3/3 passes (iterations 8-24, 51/51 tasks). Overall: 98% (65/66).**
 
-### Haiku Milestone: 17 Consecutive Perfect Runs
+---
+
+## Haiku Iteration 25
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 66.0s | $0.0070 | 1 |
+| LD-07 | **PASS** | 107.8s | $0.0060 | 1 |
+| LQ-01 | **PASS** | 134.0s | $0.0064 | 1 |
+
+**18 consecutive 3/3 passes (iterations 8-25, 54/54 tasks). Overall: 99% (68/69).**
+
+### Haiku Milestone: 18 Consecutive Perfect Runs
 
 | Task | Baseline | With Tools | Consecutive Passes |
 |------|----------|-----------|-------------------|
-| LR-01 | **0% (0/3)** | **100% (18/18)** | **18** |
-| LD-07 | **0% (0/3)** | **100% (24/24)** | **24** |
-| LQ-01 | 100% (3/3) | **94% (17/18)** | **17** |
-| **Overall** | **33%** | **98% (65/66)** | **17 × 3/3** |
+| LR-01 | **0% (0/3)** | **100% (19/19)** | **19** |
+| LD-07 | **0% (0/3)** | **100% (25/25)** | **25** |
+| LQ-01 | 100% (3/3) | **94% (18/19)** | **18** |
+| **Overall** | **33%** | **99% (68/69)** | **18 × 3/3** |
 
 ---
