@@ -1358,3 +1358,24 @@ Consecutive streak: 6. Overall: **96% (93/97).**
 | **Overall** | **33%** | **96% (93/97)** | 6 |
 
 ---
+
+## Haiku Iteration 35
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 55.1s | $0.0069 | 1 |
+| LD-07 | **PASS** | 154.2s | $0.0079 | 1 |
+| LQ-01 | **PASS** | 187.0s | $0.0076 | 1 |
+
+Consecutive streak: 7. LD-07 also fetched `guid_formatting` pattern — good tool usage.
+
+**Overall: 96% (96/100).**
+
+| Task | Baseline | With Tools | Consecutive |
+|------|----------|-----------|-------------|
+| LR-01 | **0% (0/3)** | **100% (29/29)** | 29 |
+| LD-07 | **0% (0/3)** | **94% (33/35)** | 7 |
+| LQ-01 | 100% (3/3) | **96% (28/29)** | 28 |
+| **Overall** | **33%** | **96% (96/100)** | 7 |
+
+---
