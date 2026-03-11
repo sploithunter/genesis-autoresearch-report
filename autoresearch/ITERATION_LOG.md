@@ -1222,11 +1222,25 @@ LQ-01 had Exit code 1 errors during execution but recovered and passed.
 
 **Overall: 96% (73/76). Consecutive 3/3 streak reset to 0.**
 
+---
+
+## Haiku Iteration 28
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 41.1s | $0.0048 | 1 |
+| LD-07 | **PASS** | 176.5s | $0.0077 | 1 |
+| LQ-01 | **PASS** | 129.1s | $0.0056 | 1 |
+
+LD-07 had Exit code 127 errors (command not found) but recovered and passed. Back to 3/3 after iteration 27's LD-07 failure. LR-01 fastest ever at 41.1s.
+
+**Overall: 96% (76/79). New consecutive streak: 1.**
+
 | Task | Baseline | With Tools | Pass Rate |
 |------|----------|-----------|-----------|
-| LR-01 | **0% (0/3)** | **100% (21/21)** | 21 consecutive |
-| LD-07 | **0% (0/3)** | **96% (26/27)** | 0 (reset) |
-| LQ-01 | 100% (3/3) | **95% (20/21)** | 20 consecutive |
-| **Overall** | **33%** | **96% (73/76)** | 0 (reset) |
+| LR-01 | **0% (0/3)** | **100% (22/22)** | 22 consecutive |
+| LD-07 | **0% (0/3)** | **96% (27/28)** | 1 (rebuilding) |
+| LQ-01 | 100% (3/3) | **95% (21/22)** | 21 consecutive |
+| **Overall** | **33%** | **96% (76/79)** | 1 |
 
 ---
