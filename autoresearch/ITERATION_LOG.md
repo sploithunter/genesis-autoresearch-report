@@ -1050,3 +1050,40 @@ LQ-01 failed with "1/5 tests passed" — first failure in 10 total LQ-01 runs (3
 Total cost for all 3 tasks this iteration: $0.018.
 
 ---
+
+## Haiku Iteration 16
+
+**No tool changes.**
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 63.3s | $0.0071 | 1 |
+| LD-07 | **PASS** | 142.1s | $0.0067 | 1 |
+| LQ-01 | **PASS** | 172.3s | $0.0064 | 1 |
+
+**9 consecutive 3/3 passes (iterations 8-16, 27/27 tasks). Overall: 98% (41/42).**
+
+---
+
+## Haiku Iteration 17
+
+**No tool changes.**
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 69.3s | $0.0070 | 1 |
+| LD-07 | **PASS** | 101.7s | $0.0040 | 1 |
+| LQ-01 | **PASS** | 279.3s | $0.0070 | 1 |
+
+**10 consecutive 3/3 passes (iterations 8-17, 30/30 tasks). Overall: 98% (44/45).**
+
+### Haiku Milestone: 10 Consecutive Perfect Runs
+
+| Task | Baseline | With Tools | Consecutive Passes |
+|------|----------|-----------|-------------------|
+| LR-01 | **0% (0/3)** | **100% (11/11)** | **11** |
+| LD-07 | **0% (0/3)** | **100% (17/17)** | **17** |
+| LQ-01 | 100% (3/3) | **91% (10/11)** | **10** |
+| **Overall** | **33%** | **98% (44/45)** | **10 × 3/3** |
+
+---
