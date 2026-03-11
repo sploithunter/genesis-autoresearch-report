@@ -752,6 +752,257 @@ Running 3 attempts per task with Haiku (no Genesis tools) to establish baseline 
 **Tasks:** LD-07 (GUID Mining), LQ-01 (Late Joiner)
 **Config:** `config_haiku.json`
 
-*Results pending...*
+### Results
+
+| Task | Run 1 | Run 2 | Run 3 | Pass Rate | Avg Cost | Avg Time |
+|------|-------|-------|-------|-----------|----------|----------|
+| LD-07 | FAIL (327s, $0.022) | FAIL (302s, $0.007) | FAIL (301s, $0.026) | **0% (0/3)** | $0.018 | 310s |
+| LQ-01 | PASS (264s, $0.011) | PASS (323s, $0.018) | PASS (135s, $0.007) | **100% (3/3)** | $0.012 | 240s |
+
+**Overall Haiku baseline: 50% (3/6)**
+
+**Key observations:**
+- LD-07: **0% — identical to Opus baseline.** Haiku hits the same `@idl.struct` vs `DynamicData` wall. Errors include `TypeError: Incompatible 'type' argument`, `ModuleNotFoundError`, and repeated failed attempts to use `dds.Topic()` with non-idl types.
+- LQ-01: **100% — better than Opus baseline (67%).** Haiku reliably solves the QoS configuration task, though it takes 2-3 iterations to get there (240s avg vs Opus's 155s avg with tools).
+- Haiku costs ~3-4x less per task than Opus ($0.015 avg vs $0.067 avg).
+
+**The test case for Genesis tools is LD-07.** If tools can take Haiku from 0% to passing, it proves the tools encode genuinely useful knowledge that works across model sizes.
+
+---
+
+## Haiku Iteration 1 — First Treatment Run
+
+**Genesis tools used by Haiku student:**
+- `get_pattern("discovery_publication_guid")` — StructType pattern for DCPSPublication
+- `get_pattern("discovery_subscription_guid")` — StructType pattern for DCPSSubscription
+- `get_pattern("dynamicdata_subscriber")` — DynamicData subscriber pattern
+- `get_qos_recipe("late_joiner")` — QoS triple for late joiner durability
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LD-07 | **PASS** | 138.0s | $0.0067 | 1 |
+| LQ-01 | **PASS** | 344.1s | $0.0169 | 3 |
+
+**LD-07: 0% baseline → PASS on first treatment attempt!**
+
+Haiku called the Genesis pattern service, got the StructType/DynamicData patterns, and passed LD-07 in a single iteration (138s, $0.007). Without tools, Haiku hit timeout every time (300s+, 0/3).
+
+LQ-01 passed but took 3 iterations (344s) — slower than baseline (240s avg). The tools may have introduced some overhead here since Haiku already knows how to solve this task.
+
+**This is the strongest validation of the Genesis tool pattern:** A smaller, cheaper model that NEVER solves LD-07 on its own passes it immediately when given access to Genesis tool services.
+
+---
+
+## Haiku Iteration 2
+
+**No tool changes.** Consistency test.
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LD-07 | **PASS** | 168.5s | $0.0081 | 1 |
+| LQ-01 | **PASS** | 365.4s | $0.0060 | 1 |
+
+**2 consecutive 2/2 passes with Haiku + Genesis tools.**
+
+---
+
+## Haiku Iteration 3
+
+**No tool changes.** Consistency test.
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LD-07 | **PASS** | 222.5s | $0.0093 | 1 |
+| LQ-01 | **PASS** | 145.5s | $0.0073 | 1 |
+
+**3 consecutive 2/2 passes (6/6 tasks) with Haiku + Genesis tools.**
+
+### Haiku Summary After 3 Treatment Iterations
+
+| Task | Baseline (no tools) | With Genesis Tools | Delta |
+|------|--------------------|--------------------|-------|
+| LD-07 | **0% (0/3)** | **100% (3/3)** | **+100pp** |
+| LQ-01 | 100% (3/3) | **100% (3/3)** | 0pp |
+| **Overall** | **50% (3/6)** | **100% (6/6)** | **+50pp** |
+
+**LD-07 with Haiku: 0% → 100%. The Genesis tools work across model sizes.**
+
+---
+
+## Haiku Iteration 4
+
+**No tool changes.** Stability test.
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LD-07 | **PASS** | 127.9s | $0.0071 | 1 |
+| LQ-01 | **PASS** | 134.2s | $0.0057 | 1 |
+
+**4 consecutive 2/2 passes (8/8 tasks) with Haiku + Genesis tools.**
+
+---
+
+## Haiku Iteration 5
+
+**No tool changes.** Stability test.
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LD-07 | **PASS** | 160.3s | $0.0086 | 1 |
+| LQ-01 | **PASS** | 129.2s | $0.0056 | 1 |
+
+**5 consecutive 2/2 passes (10/10 tasks) with Haiku + Genesis tools.**
+
+### Haiku Experiment Summary After 5 Iterations
+
+| Task | Baseline (no tools) | With Genesis Tools | Delta |
+|------|--------------------|--------------------|-------|
+| LD-07 | **0% (0/3)** | **100% (5/5)** | **+100pp** |
+| LQ-01 | 100% (3/3) | **100% (5/5)** | 0pp |
+| **Overall** | **50% (3/6)** | **100% (10/10)** | **+50pp** |
+
+**Avg cost per task with tools:** $0.007 (LD-07), $0.006 (LQ-01) — ~10x cheaper than Opus with tools ($0.067)
+
+---
+
+## Haiku Iterations 5-6
+
+**No tool changes.** Stability testing.
+
+| Iter | LD-07 | LQ-01 | LD-07 Time | LQ-01 Time |
+|------|-------|-------|------------|------------|
+| 5 | **PASS** (1 iter, $0.009) | **PASS** (1 iter, $0.006) | 160.3s | 129.2s |
+| 6 | **PASS** (1 iter, $0.008) | **PASS** (1 iter, $0.008) | 167.8s | 129.8s |
+
+**6 consecutive 2/2 passes (12/12 tasks) with Haiku + Genesis tools.**
+
+---
+
+## LR-01 Haiku Baseline
+
+**Clean baseline:** All Genesis services stopped, no CLAUDE.md injected, zero processes on domain 55.
+
+| Task | Run 1 | Run 2 | Run 3 | Pass Rate |
+|------|-------|-------|-------|-----------|
+| LR-01 | FAIL (305s, $0.013) | FAIL (327s, $0.016) | FAIL (325s, $0.012) | **0% (0/3)** |
+
+**Haiku cannot solve LR-01 without tools.** All 3 runs hit 300s timeout. Haiku doesn't know the `rti.rpc.Requester` polling API.
+
+### Updated Haiku Baseline Summary
+
+| Task | Haiku Baseline | Opus Baseline |
+|------|---------------|---------------|
+| LR-01 | **0% (0/3)** | 33% (1/3) |
+| LD-07 | **0% (0/3)** | 0% (0/3) |
+| LQ-01 | 100% (3/3) | 67% (2/3) |
+| **Overall** | **33% (3/9)** | **33% (3/9)** |
+
+Remarkably, both models have the same overall 33% baseline — but fail on different tasks. Haiku is worse on LR-01 (0% vs 33%) but better on LQ-01 (100% vs 67%).
+
+---
+
+## Haiku Iteration 7 — First 3-Task Run
+
+**Added LR-01 to treatment config.** All 3 tasks now tested with Genesis tools.
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 73.5s | $0.0068 | 1 |
+| LD-07 | **PASS** | 123.9s | $0.0065 | 1 |
+| LQ-01 | **FAIL** | 376.6s | $0.0067 | 1 (timeout) |
+
+**LR-01: 0% baseline → PASS on first treatment attempt!** Genesis tools immediately solve the RPC task for Haiku.
+
+LQ-01 failed with "1/5 tests passed" — first failure in 10 total LQ-01 runs (3 baseline + 6 treatment + this). Likely a timeout issue — Haiku ran long on the 3-task sequence and LQ-01 was last, getting squeezed. The verification ran 74.9s after 301.6s of coding time.
+
+---
+
+## Haiku Iteration 8 — First Perfect 3/3
+
+**No tool changes.**
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 47.1s | $0.0033 | 1 |
+| LD-07 | **PASS** | 133.9s | $0.0070 | 1 |
+| LQ-01 | **PASS** | 189.1s | $0.0069 | 1 |
+
+**First perfect 3/3 with Haiku + Genesis tools!** Total cost: $0.017 for all 3 tasks.
+
+### Haiku Summary After 8 Treatment Iterations
+
+| Task | Baseline | With Tools | Delta |
+|------|----------|-----------|-------|
+| LR-01 | **0% (0/3)** | **100% (2/2)** | **+100pp** |
+| LD-07 | **0% (0/3)** | **100% (8/8)** | **+100pp** |
+| LQ-01 | 100% (3/3) | **88% (7/8)** | -12pp |
+| **Overall** | **33% (3/9)** | **94% (17/18)** | **+61pp** |
+
+---
+
+## Haiku Iteration 9
+
+**No tool changes.**
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 69.5s | $0.0076 | 1 |
+| LD-07 | **PASS** | 101.6s | $0.0075 | 1 |
+| LQ-01 | **PASS** | 190.2s | $0.0065 | 1 |
+
+**2 consecutive 3/3 passes. Overall: 95% (20/21).**
+
+---
+
+## Haiku Iterations 10
+
+**No tool changes.**
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 63.9s | $0.0067 | 1 |
+| LD-07 | **PASS** | 144.1s | $0.0080 | 1 |
+| LQ-01 | **PASS** | 201.5s | $0.0078 | 1 |
+
+**3 consecutive 3/3 passes (iterations 8-10). Overall: 96% (23/24).**
+
+### Haiku Comprehensive Summary After 10 Iterations
+
+| Task | Baseline (no tools) | With Genesis Tools | Delta |
+|------|--------------------|--------------------|-------|
+| LR-01 | **0% (0/3)** | **100% (4/4)** | **+100pp** |
+| LD-07 | **0% (0/3)** | **100% (10/10)** | **+100pp** |
+| LQ-01 | 100% (3/3) | **90% (9/10)** | -10pp |
+| **Overall** | **33% (3/9)** | **96% (23/24)** | **+63pp** |
+
+**Cost comparison:** Haiku+tools avg $0.007/task vs Opus+tools avg $0.067/task — **10x cheaper for the same results.**
+
+---
+
+## Haiku Iteration 11
+
+**No tool changes.**
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 65.3s | $0.0067 | 1 |
+| LD-07 | **PASS** | 136.0s | $0.0065 | 1 |
+| LQ-01 | **PASS** | 176.0s | $0.0061 | 1 |
+
+**4 consecutive 3/3 passes (iterations 8-11). Overall: 96% (26/27).**
+
+---
+
+## Haiku Iteration 12
+
+**No tool changes.**
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 85.7s | $0.0132 | 1 |
+| LD-07 | **PASS** | 168.1s | $0.0081 | 1 |
+| LQ-01 | **PASS** | 186.7s | $0.0067 | 1 |
+
+**5 consecutive 3/3 passes (iterations 8-12, 15/15 tasks). Overall: 97% (29/30).**
 
 ---
