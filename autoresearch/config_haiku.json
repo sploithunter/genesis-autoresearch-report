@@ -1,0 +1,14 @@
+{
+  "genesis_lib_path": "/Users/jason/Documents/Genesis_rc1/Genesis_LIB",
+  "harness_bench_path": "/Users/jason/Documents/harness-bench",
+  "target_tasks": [
+    "LD-07_discovery_guid_mining",
+    "LQ-01_late_joiner_durability"
+  ],
+  "harness": "claude-sub",
+  "model": "haiku",
+  "timeout_s": 300,
+  "max_iterations": 5,
+  "genesis_domain_id": 55,
+  "runs_per_task": 1
+}
