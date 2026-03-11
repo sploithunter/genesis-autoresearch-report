@@ -1236,11 +1236,25 @@ LD-07 had Exit code 127 errors (command not found) but recovered and passed. Bac
 
 **Overall: 96% (76/79). New consecutive streak: 1.**
 
+---
+
+## Haiku Iteration 29
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 55.3s | $0.0045 | 1 |
+| LD-07 | **FAIL** | 308.9s | $0.0152 | 2 |
+| LQ-01 | **PASS** | 186.9s | $0.0092 | 1 |
+
+**Second LD-07 failure in 3 iterations.** Same error: "GUID extraction not working - no publisher_guid in output." LD-07 failure rate rising: 2 failures in last 3 runs vs 1 in prior 26. May indicate Haiku intermittently struggles with StructType/DynamicData GUID extraction pattern despite correct tool guidance.
+
+**Overall: 96% (78/82). LD-07 pass rate: 93% (27/29).**
+
 | Task | Baseline | With Tools | Pass Rate |
 |------|----------|-----------|-----------|
-| LR-01 | **0% (0/3)** | **100% (22/22)** | 22 consecutive |
-| LD-07 | **0% (0/3)** | **96% (27/28)** | 1 (rebuilding) |
-| LQ-01 | 100% (3/3) | **95% (21/22)** | 21 consecutive |
-| **Overall** | **33%** | **96% (76/79)** | 1 |
+| LR-01 | **0% (0/3)** | **100% (23/23)** | 23 consecutive |
+| LD-07 | **0% (0/3)** | **93% (27/29)** | 0 (2 fails in 3) |
+| LQ-01 | 100% (3/3) | **96% (22/23)** | 22 consecutive |
+| **Overall** | **33%** | **96% (78/82)** | 0 |
 
 ---
