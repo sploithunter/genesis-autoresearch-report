@@ -19,12 +19,13 @@
         "TRANSIENT_LOCAL alone is NOT sufficient - RELIABLE is required to activate the resend mechanism",
         "KEEP_LAST with default depth=1 will only deliver the most recent sample to late joiners",
         "QoS must be compatible between writer and reader or they will not match",
-        "Use writer.wait_for_acknowledgments() instead of time.sleep() to wait for delivery",
-        "time.sleep() is a timing hack - DDS provides proper mechanisms for synchronization"
+        "IMPORTANT: Publisher must stay alive after writing! Use time.sleep(5) to keep the process alive",
+        "If publisher exits immediately, late joiners won't receive cached data even with correct QoS",
+        "Keep it simple: time.sleep(5) is reliable. Do NOT add wait_for_acknowledgments — it raises TimeoutError when no readers matched yet"
       ],
       "writer_code": "writer_qos = dds.DataWriterQos()\nwriter_qos.durability.kind = dds.DurabilityKind.TRANSIENT_LOCAL\nwriter_qos.reliability.kind = dds.ReliabilityKind.RELIABLE\nwriter_qos.history.kind = dds.HistoryKind.KEEP_ALL",
       "reader_code": "reader_qos = dds.DataReaderQos()\nreader_qos.durability.kind = dds.DurabilityKind.TRANSIENT_LOCAL\nreader_qos.reliability.kind = dds.ReliabilityKind.RELIABLE\nreader_qos.history.kind = dds.HistoryKind.KEEP_ALL",
-      "wait_code": "# After publishing all samples, use DDS mechanism to wait:\ntry:\n    writer.wait_for_acknowledgments(dds.Duration(seconds=30))\nexcept dds.TimeoutError:\n    pass  # No readers matched yet, exit cleanly"
+      "wait_code": "# After publishing all samples, keep publisher alive for late joiners.\n# SIMPLE AND RELIABLE: just sleep to keep the process alive.\n# Do NOT over-complicate with wait_for_acknowledgments — it can raise\n# TimeoutError if no readers matched yet, adding unnecessary complexity.\ntime.sleep(5)  # Keep process alive for late-joining subscribers"
     },
     "reliable_delivery": {
       "goal": "Ensure all samples are delivered reliably to all matched readers",

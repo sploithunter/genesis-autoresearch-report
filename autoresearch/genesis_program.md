@@ -1,46 +1,72 @@
-# Genesis AutoResearch - Iteration 1
+# Genesis AutoResearch - Current Iteration
 
-## Current State
-- Baseline not yet established
-- Three Genesis DDS tool services built with initial reference data
-- CLI client and workspace injection ready
-- No treatment runs yet
+## Philosophy: Teacher-Student Knowledge Persistence
 
-## This Iteration's Goal
-1. Establish the Opus 4.6 baseline (3 runs per task, no Genesis tools)
-2. Run the first treatment iteration (1 run per task, with Genesis tools)
-3. Compare results and identify which tools the coding agent uses (or doesn't)
+The core insight: **once an answer is found, it becomes persistent.**
 
-## Steps
-1. [ ] Run baseline: `cd autoresearch && python runner/run_benchmark.py --baseline`
-2. [ ] Run treatment iteration 1: `python runner/run_benchmark.py --iteration 1 --treatment-only`
-3. [ ] Evaluate: `python runner/evaluate.py --iteration 1`
-4. [ ] Generate graph: `python runner/generate_graph.py`
-5. [ ] Review results and update ITERATION_LOG.md
-6. [ ] Update this file for iteration 2
+1. **Teacher provides environment knowledge** — don't let the student waste time on things we already know (which Python has RTI, PATH setup, etc.)
+2. **Read ALL logs** (pass and fail) — identify what the agent struggled with
+3. **Capture discoveries as Genesis tools** — when a student figures something out, encode it as a Genesis service function so future runs never struggle with it again
+4. **Each iteration compounds** — the tool library grows with real, battle-tested knowledge
 
-## Success Criteria
-- Baseline is established with clear pass/fail data
-- Treatment shows at least 1 task improvement over baseline
-- OR: tool usage logs reveal why tools weren't used (informs next iteration)
+## Current State: ITERATION 4 — DynamicData Fix for LD-07 + LQ-01 refinement
+- **Baseline: 3/9 (33%)** — LR-01: 1/3, LD-07: 0/3, LQ-01: 2/3
+- **Iteration 1: 2/3 (67%)** — LR-01 PASS, LD-07 FAIL, LQ-01 PASS
+- **Iteration 2: 1/3 (33%)** — LR-01 PASS, LD-07 FAIL, LQ-01 FAIL (regression)
+- **Iteration 3: 1/3 (33%)** — LR-01 PASS, LD-07 FAIL, LQ-01 FAIL
+- LR-01 SOLVED (100% treatment), dropped from further testing
+- Key fixes for iteration 4:
+  - **CRITICAL**: Added `dynamicdata_subscriber` pattern — @idl.struct receives ZERO samples from DynamicData publishers (root cause of LD-07 failures)
+  - Updated discovery patterns to emphasize DynamicData approach
+  - Added @idl.struct vs DynamicData incompatibility to common_errors.json
+  - Added DynamicData warning prominently in workspace CLAUDE.md
+  - Simplified LQ-01 publisher keepalive guidance (time.sleep(5) only)
 
-## Constraints
-- Tools must remain general-purpose (not task-specific hints)
-- Do NOT modify harness-bench code
-- All tools must be Genesis services on domain 55
-- Commit all changes to branch `autoresearch/experiment-v1` at the end of every loop iteration
-- Every iteration must be documented in ITERATION_LOG.md before committing
+## Environment Fixes Applied (for ALL runs)
+- `ANTHROPIC_API_KEY` stripped for `claude-sub` → forces OAuth subscription
+- Genesis `.venv/bin` prepended to PATH → `python` finds RTI DDS
+- Babysitter thread polls tmux every 10s → auto-accepts trust dialogs
 
-## What to Modify Next (based on evaluation)
-If tools aren't being used:
-  - Improve workspace CLAUDE.md instructions to be more prominent
-  - Simplify the CLI tool interface
+## After Baseline Completes
 
-If tools are used but tasks still fail:
-  - Review which functions were called and what was returned
-  - Add missing API information to reference data
-  - Improve pattern examples
+### Step 1: Read conversation logs from ALL baseline runs
+```bash
+# Find conversation logs from baseline runs
+find /Users/jason/Documents/harness-bench/results/logs -name "*.json" -newer baseline_start_marker | sort
+```
+- Read each log looking for: what did the agent struggle with? What took the longest?
+- Even for PASSES: what workarounds did the agent discover? How can we save those?
 
-If tasks pass with tools:
-  - Document what worked
-  - Try with Haiku model to test generalization
+### Step 2: Extract knowledge into Genesis tools
+For each struggle identified:
+- If it's API knowledge → add to `dds_reference_service.py` reference data
+- If it's a code pattern → add to `dds_pattern_service.py` patterns
+- If it's an error/environment issue → add to `dds_diagnostic_service.py`
+- If it's a new category → create a new Genesis function
+
+### Step 3: Write CLAUDE.md for treatment workspaces
+Create a workspace CLAUDE.md that:
+- Tells the agent about available Genesis DDS tools
+- Provides environment hints (Python path, RTI DDS location)
+- Points to the CLI tool for queries
+
+### Step 4: Run treatment iteration 1
+```bash
+python autoresearch/runner/run_benchmark.py --iteration 1 --treatment-only
+```
+
+### Step 5: Evaluate and document
+- Compare treatment vs baseline pass rates
+- Check which Genesis functions were called
+- Read treatment logs to see if tools were used and helped
+- Update ITERATION_LOG.md
+- Generate improvement graph
+- Commit to branch
+
+## Config
+- Harness: claude-sub (subscription, OAuth token)
+- Model: opus (4.6)
+- Timeout: 300s per task
+- Max iterations: 5
+- Domain: 55 (Genesis services)
+- Runs per task: 1 (treatment), 3 (baseline)

@@ -4,12 +4,29 @@ You have access to DDS development reference tools provided by Genesis services.
 When working with RTI Connext DDS Python APIs, **always use these tools** to look up
 correct API signatures, code patterns, and QoS settings before writing code.
 
-## How to Use
+## Environment — READ THIS FIRST
 
-Run this command to query the DDS tools:
+**CRITICAL**: System Python does NOT have RTI Connext DDS. You MUST use the virtual environment Python:
 
 ```bash
-python {GENESIS_DDS_TOOL_PATH} --function FUNCTION_NAME --args '{{"param": "value"}}'
+# Use this exact Python for ALL RTI DDS scripts:
+/Users/jason/Documents/Genesis_rc1/Genesis_LIB/.venv/bin/python
+
+# Or activate the venv first:
+source /Users/jason/Documents/Genesis_rc1/Genesis_LIB/.venv/bin/activate
+```
+
+- Do NOT use `python`, `python3`, or `/opt/homebrew/bin/python3` — they lack RTI
+- Do NOT run `pip install rti.connextdds` — it is a commercial product, not on PyPI
+- Do NOT search for Python with `find /` or `which python3` — it wastes time
+- The shebang in your scripts should be `#!/usr/bin/env python` but run them with the venv Python explicitly
+
+## How to Use
+
+Run this command to query the DDS tools (note: uses the venv Python):
+
+```bash
+/Users/jason/Documents/Genesis_rc1/Genesis_LIB/.venv/bin/python {GENESIS_DDS_TOOL_PATH} --function FUNCTION_NAME --args '{{"param": "value"}}'
 ```
 
 ## Available Functions
@@ -37,7 +54,9 @@ python {GENESIS_DDS_TOOL_PATH} --function FUNCTION_NAME --args '{{"param": "valu
 - **get_pattern** - Get verified, working DDS code patterns
   ```bash
   python {GENESIS_DDS_TOOL_PATH} --function get_pattern --args '{{"pattern_name": "rpc_requester"}}'
+  python {GENESIS_DDS_TOOL_PATH} --function get_pattern --args '{{"pattern_name": "dynamicdata_subscriber"}}'
   python {GENESIS_DDS_TOOL_PATH} --function get_pattern --args '{{"pattern_name": "guid_formatting"}}'
+  python {GENESIS_DDS_TOOL_PATH} --function get_pattern --args '{{"pattern_name": "discovery_publication_guid"}}'
   python {GENESIS_DDS_TOOL_PATH} --function get_pattern --args '{{"pattern_name": "transient_local_durability"}}'
   ```
 
@@ -64,8 +83,31 @@ python {GENESIS_DDS_TOOL_PATH} --function FUNCTION_NAME --args '{{"param": "valu
   python {GENESIS_DDS_TOOL_PATH} --function check_qos_compatibility --args '{{"writer_qos": "TRANSIENT_LOCAL, RELIABLE", "reader_qos": "VOLATILE, BEST_EFFORT"}}'
   ```
 
+## CRITICAL: DynamicData vs @idl.struct
+
+**If you need to subscribe to a topic published by another process, use DynamicData — NOT @idl.struct.**
+
+`@idl.struct` subscribers receive **ZERO samples** from `DynamicData` publishers. This is an RTI DDS type system incompatibility. Since you don't control the publisher, always use DynamicData:
+
+```python
+# CORRECT — works with any publisher:
+hello_type = dds.StructType('HelloWorld')
+hello_type.add_member(dds.Member('message', dds.StringType(256)))
+hello_type.add_member(dds.Member('count', dds.Int32Type()))
+topic = dds.DynamicData.Topic(participant, 'HelloWorld', hello_type)
+reader = dds.DynamicData.DataReader(participant.implicit_subscriber, topic)
+
+# WRONG — receives 0 samples if publisher uses DynamicData:
+# @idl.struct class MyType: ...
+# topic = dds.Topic(participant, 'TopicName', MyType)
+# reader = dds.DataReader(subscriber, topic)
+```
+
+**For GUID discovery tasks**: Use `get_pattern('discovery_publication_guid')` and `get_pattern('discovery_subscription_guid')` — these are COMPLETE working scripts. Copy the code directly, adapt the topic name and fields, and you're done. Do NOT try to access builtin topics via `Subscriber.lookup_datareader()` or `DataReader.find_by_topic()` — those APIs don't exist on generic classes.
+
 ## Tips
 - Always look up the API before using RTI DDS classes you haven't used before
 - Use get_pattern for complete working examples of common DDS patterns
+- For discovery/GUID tasks: use `get_pattern('dynamicdata_subscriber')` — never @idl.struct
 - Use get_qos_recipe when configuring QoS for specific scenarios
 - Use diagnose_error when you encounter errors to get specific fixes

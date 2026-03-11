@@ -47,6 +47,42 @@
     "AttributeError: 'Subscriber' object has no attribute 'lookup_datareader'": {
       "cause": "Built-in topic readers are accessed from the participant, not the subscriber.",
       "fix": "Use participant.subscription_reader for DCPSSubscription built-in topic."
+    },
+    "ModuleNotFoundError: No module named 'rti'": {
+      "cause": "RTI Connext DDS Python bindings are installed in the project's virtual environment, NOT in the system Python. System Python (3.14) does not have rti.connextdds.",
+      "fix": "Use the virtual environment Python: run `which python3.10` or `which python3.12` to find an RTI-enabled Python. The project .venv/bin/python has RTI installed. Do NOT try `pip install rti.connextdds` — it is a commercial product and is not on PyPI."
+    },
+    "UnsupportedError: Can't create an AnyDataReader from a built-in topic DataReader": {
+      "cause": "Built-in topic DataReaders cannot be wrapped in AnyDataReader. Access them directly from the participant.",
+      "fix": "Use `participant.builtin_subscriber` to get the built-in subscriber, then access publication/subscription readers directly. For publication data: iterate `dds.PublicationBuiltinTopicData.DataReader.find_by_topic(participant, 'DCPSPublication')` or use `participant.publication_reader`."
+    },
+    "Guid constructor: TypeError or AttributeError when creating GUID": {
+      "cause": "DDS GUIDs are not constructed directly. They are extracted from BuiltinTopicKey values on discovery data.",
+      "fix": "Get GUID from matched_publication_data(handle).key.value — this returns a tuple of 4 uint32. Format with struct.pack('>I', v) for each value, then format as 'xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx|x.x.x.xx'."
+    },
+    "TypeError: 'rti.connextdds.Guid' object is not callable": {
+      "cause": "dds.Guid is a type, not a callable constructor. You cannot create GUID objects directly. GUIDs are extracted from discovery data.",
+      "fix": "Do NOT call dds.Guid(). Instead: 1) Get pub_data = reader.matched_publication_data(sample.info.publication_handle), 2) Access pub_data.key.value (tuple of 4 uint32), 3) Format with struct.pack('>I', v) for each value. Use the get_pattern('guid_formatting') tool for the complete pattern."
+    },
+    "wait_for_service returned False or timed out": {
+      "cause": "wait_for_service() is unreliable in RTI Python RPC. It may return False even when the service is available.",
+      "fix": "Use matched_replier_count polling instead: `while requester.matched_replier_count == 0: time.sleep(0.1)` with a timeout. This directly checks DDS discovery."
+    },
+    "Publisher exits before late joiner receives data": {
+      "cause": "Publisher needs to stay alive long enough for TRANSIENT_LOCAL cache to be delivered to late-joining readers.",
+      "fix": "After publishing all samples, use `time.sleep(5)` to keep the process alive. This is simpler and more reliable than wait_for_acknowledgments, which raises TimeoutError when no readers have matched yet."
+    },
+    "@idl.struct subscriber receives 0 samples from DynamicData publisher": {
+      "cause": "CRITICAL TYPE INCOMPATIBILITY: When a publisher uses DynamicData, an @idl.struct subscriber will receive ZERO samples. The two type representations are incompatible at the DDS middleware level, even if the fields match.",
+      "fix": "Use DynamicData.DataReader instead of @idl.struct. Steps: 1) topic = dds.DynamicData.Topic.find(participant, 'TopicName'), 2) reader = dds.DynamicData.DataReader(participant.implicit_subscriber, topic), 3) Access fields with bracket notation: sample.data['field_name']. Use get_pattern('dynamicdata_subscriber') for the complete pattern."
+    },
+    "AttributeError: type object 'rti.connextdds.DataReader' has no attribute 'find_by_topic'": {
+      "cause": "find_by_topic is NOT on the generic DataReader class. It is a class method on specific typed DataReader classes like PublicationBuiltinTopicData.DataReader or SubscriptionBuiltinTopicData.DataReader.",
+      "fix": "For builtin topics use: dds.PublicationBuiltinTopicData.DataReader.find_by_topic(participant.builtin_subscriber, 'DCPSPublication'). For regular data topics, create a DynamicData.DataReader: first create a StructType, then dds.DynamicData.Topic(), then dds.DynamicData.DataReader(). See get_pattern('dynamicdata_subscriber')."
+    },
+    "Subscriber receives no data despite correct QoS": {
+      "cause": "Type mismatch between publisher and subscriber. If the publisher uses DynamicData and the subscriber uses @idl.struct (or vice versa), zero samples will be delivered. This is the most common cause of 'no data received' when QoS is correct.",
+      "fix": "Use DynamicData.Topic.find() to discover the topic, then create a DynamicData.DataReader. This automatically matches the publisher's type representation. See get_pattern('dynamicdata_subscriber')."
     }
   }
 }
