@@ -1297,3 +1297,24 @@ LD-07 took 2 iterations (314s) with many Exit code 1 errors but ultimately passe
 | **Overall** | **33%** | **95% (84/88)** | 3 |
 
 ---
+
+## Haiku Iteration 32
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 74.0s | $0.0057 | 1 |
+| LD-07 | **PASS** | 128.0s | $0.0058 | 1 |
+| LQ-01 | **PASS** | 342.2s | $0.0166 | 3 |
+
+LQ-01 needed 3 iterations with multiple errors but passed. Consecutive streak: 4.
+
+**Overall: 96% (87/91).**
+
+| Task | Baseline | With Tools | Consecutive |
+|------|----------|-----------|-------------|
+| LR-01 | **0% (0/3)** | **100% (26/26)** | 26 |
+| LD-07 | **0% (0/3)** | **94% (30/32)** | 4 |
+| LQ-01 | 100% (3/3) | **96% (25/26)** | 25 |
+| **Overall** | **33%** | **96% (87/91)** | 4 |
+
+---
