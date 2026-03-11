@@ -1208,13 +1208,25 @@ LQ-01 had Exit code 1 errors during execution but recovered and passed.
 
 **19 consecutive 3/3 passes (iterations 8-26, 57/57 tasks). Overall: 99% (71/72).**
 
-### Haiku Milestone: 19 Consecutive Perfect Runs
+---
 
-| Task | Baseline | With Tools | Consecutive Passes |
-|------|----------|-----------|-------------------|
-| LR-01 | **0% (0/3)** | **100% (20/20)** | **20** |
-| LD-07 | **0% (0/3)** | **100% (26/26)** | **26** |
-| LQ-01 | 100% (3/3) | **95% (19/20)** | **19** |
-| **Overall** | **33%** | **99% (71/72)** | **19 × 3/3** |
+## Haiku Iteration 27
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 57.2s | $0.0063 | 1 |
+| LD-07 | **FAIL** | 309.0s | $0.0166 | 2 |
+| LQ-01 | **PASS** | 125.4s | $0.0069 | 1 |
+
+**LD-07 failure breaks 19-run perfect streak.** Verification: "GUID extraction not working - no publisher_guid in output." Haiku intermittently fails to follow the StructType/DynamicData GUID extraction pattern. After 26 consecutive LD-07 passes, this is likely a random fluke (~4% failure rate).
+
+**Overall: 96% (73/76). Consecutive 3/3 streak reset to 0.**
+
+| Task | Baseline | With Tools | Pass Rate |
+|------|----------|-----------|-----------|
+| LR-01 | **0% (0/3)** | **100% (21/21)** | 21 consecutive |
+| LD-07 | **0% (0/3)** | **96% (26/27)** | 0 (reset) |
+| LQ-01 | 100% (3/3) | **95% (20/21)** | 20 consecutive |
+| **Overall** | **33%** | **96% (73/76)** | 0 (reset) |
 
 ---
