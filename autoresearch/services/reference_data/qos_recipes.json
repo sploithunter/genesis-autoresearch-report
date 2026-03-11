@@ -1,0 +1,58 @@
+{
+  "recipes": {
+    "late_joiner": {
+      "goal": "Enable subscribers that join after publication to receive previously published samples",
+      "required_settings": {
+        "writer": {
+          "durability": "TRANSIENT_LOCAL - Caches samples in writer memory for late joiners",
+          "reliability": "RELIABLE - Enables acknowledgment protocol needed for resending cached data",
+          "history": "KEEP_ALL - Stores all published samples (KEEP_LAST with depth=1 only keeps the latest!)"
+        },
+        "reader": {
+          "durability": "TRANSIENT_LOCAL - Must match writer durability for compatibility",
+          "reliability": "RELIABLE - Must match writer for acknowledgment protocol",
+          "history": "KEEP_ALL - Ensures reader can receive all cached samples"
+        }
+      },
+      "critical_notes": [
+        "ALL THREE settings (durability + reliability + history) must be set on BOTH sides",
+        "TRANSIENT_LOCAL alone is NOT sufficient - RELIABLE is required to activate the resend mechanism",
+        "KEEP_LAST with default depth=1 will only deliver the most recent sample to late joiners",
+        "QoS must be compatible between writer and reader or they will not match",
+        "Use writer.wait_for_acknowledgments() instead of time.sleep() to wait for delivery",
+        "time.sleep() is a timing hack - DDS provides proper mechanisms for synchronization"
+      ],
+      "writer_code": "writer_qos = dds.DataWriterQos()\nwriter_qos.durability.kind = dds.DurabilityKind.TRANSIENT_LOCAL\nwriter_qos.reliability.kind = dds.ReliabilityKind.RELIABLE\nwriter_qos.history.kind = dds.HistoryKind.KEEP_ALL",
+      "reader_code": "reader_qos = dds.DataReaderQos()\nreader_qos.durability.kind = dds.DurabilityKind.TRANSIENT_LOCAL\nreader_qos.reliability.kind = dds.ReliabilityKind.RELIABLE\nreader_qos.history.kind = dds.HistoryKind.KEEP_ALL",
+      "wait_code": "# After publishing all samples, use DDS mechanism to wait:\ntry:\n    writer.wait_for_acknowledgments(dds.Duration(seconds=30))\nexcept dds.TimeoutError:\n    pass  # No readers matched yet, exit cleanly"
+    },
+    "reliable_delivery": {
+      "goal": "Ensure all samples are delivered reliably to all matched readers",
+      "required_settings": {
+        "writer": {
+          "reliability": "RELIABLE",
+          "history": "KEEP_ALL or KEEP_LAST with sufficient depth"
+        },
+        "reader": {
+          "reliability": "RELIABLE",
+          "history": "KEEP_ALL or KEEP_LAST with sufficient depth"
+        }
+      },
+      "code": "writer_qos.reliability.kind = dds.ReliabilityKind.RELIABLE\nwriter_qos.history.kind = dds.HistoryKind.KEEP_ALL\nreader_qos.reliability.kind = dds.ReliabilityKind.RELIABLE\nreader_qos.history.kind = dds.HistoryKind.KEEP_ALL"
+    },
+    "best_effort_fast": {
+      "goal": "Maximum throughput with no delivery guarantees",
+      "required_settings": {
+        "writer": {
+          "reliability": "BEST_EFFORT",
+          "history": "KEEP_LAST with depth=1"
+        },
+        "reader": {
+          "reliability": "BEST_EFFORT",
+          "history": "KEEP_LAST with depth=1"
+        }
+      },
+      "warning": "Late joiners will NOT receive any previously published data with this configuration."
+    }
+  }
+}

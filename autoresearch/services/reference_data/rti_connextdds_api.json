@@ -1,0 +1,84 @@
+{
+  "module": "rti.connextdds",
+  "alias": "import rti.connextdds as dds",
+  "classes": {
+    "DomainParticipant": {
+      "constructor": "dds.DomainParticipant(domain_id)",
+      "description": "Creates a DDS domain participant on the specified domain.",
+      "example": "participant = dds.DomainParticipant(0)"
+    },
+    "Duration": {
+      "constructor": "dds.Duration(seconds=N) or dds.Duration(seconds=N, nanoseconds=M)",
+      "description": "Represents a time duration for DDS operations.",
+      "example": "timeout = dds.Duration(seconds=5)"
+    },
+    "DataWriter": {
+      "key_methods": {
+        "write": "writer.write(sample) - Publish a data sample",
+        "wait_for_acknowledgments": "writer.wait_for_acknowledgments(max_wait) - Block until all written samples are acknowledged by matched readers. Raises dds.TimeoutError on timeout.",
+        "matched_subscriptions": "writer.matched_subscriptions - Property returning list of InstanceHandles for matched DataReaders",
+        "matched_subscription_data": "writer.matched_subscription_data(handle) - Get SubscriptionBuiltinTopicData for a matched reader"
+      },
+      "qos_properties": {
+        "durability": "writer_qos.durability.kind = dds.DurabilityKind.TRANSIENT_LOCAL",
+        "reliability": "writer_qos.reliability.kind = dds.ReliabilityKind.RELIABLE",
+        "history": "writer_qos.history.kind = dds.HistoryKind.KEEP_ALL"
+      }
+    },
+    "DataReader": {
+      "key_methods": {
+        "take": "reader.take() - Take (remove) all available samples from the reader cache",
+        "read": "reader.read() - Read all available samples without removing them",
+        "matched_publications": "reader.matched_publications - Property returning list of InstanceHandles for matched DataWriters",
+        "matched_publication_data": "reader.matched_publication_data(handle) - Get PublicationBuiltinTopicData for a matched writer"
+      },
+      "sample_access": {
+        "description": "Samples from take()/read() have .info and .data attributes",
+        "info_fields": {
+          "valid": "Boolean - check this before accessing .data",
+          "publication_handle": "InstanceHandle identifying the source DataWriter"
+        },
+        "example": "for sample in reader.take():\n    if sample.info.valid:\n        print(sample.data)"
+      }
+    }
+  },
+  "builtin_topics": {
+    "description": "DDS provides built-in topics for discovering remote entities.",
+    "subscription_reader": {
+      "access": "participant.subscription_reader",
+      "description": "DataReader for DCPSSubscription built-in topic. Returns samples with .data containing: key (BuiltinTopicKey/GUID), topic_name, type_name, participant_key.",
+      "example": "for sample in participant.subscription_reader.take():\n    if sample.info.valid:\n        if sample.data.topic_name == 'MyTopic':\n            guid = sample.data.key"
+    },
+    "publication_reader": {
+      "access": "participant.publication_reader",
+      "description": "DataReader for DCPSPublication built-in topic."
+    }
+  },
+  "guid_formatting": {
+    "description": "BuiltinTopicKey contains a .value attribute with 4 unsigned 32-bit integers. To format as a human-readable GUID string:",
+    "pattern": "import struct\n\ndef format_guid(key):\n    raw = key.value  # tuple of 4 uint32\n    all_bytes = []\n    for v in raw:\n        all_bytes.extend(struct.pack('>I', v))\n    prefix = '.'.join(f'{b:02x}' for b in all_bytes[:12])\n    entity = '.'.join(f'{b:x}' for b in all_bytes[12:16])\n    return f'{prefix}|{entity}'"
+  },
+  "enums": {
+    "DurabilityKind": {
+      "VOLATILE": "No durability - samples not stored. Late joiners miss everything.",
+      "TRANSIENT_LOCAL": "Writer caches samples in memory. Late joiners receive cached data.",
+      "TRANSIENT": "Samples survive writer crash (stored by durability service).",
+      "PERSISTENT": "Samples survive system restart (stored to disk)."
+    },
+    "ReliabilityKind": {
+      "BEST_EFFORT": "No delivery guarantees. Fast but unreliable.",
+      "RELIABLE": "Acknowledged delivery with resend. Required for late-joiner delivery with TRANSIENT_LOCAL."
+    },
+    "HistoryKind": {
+      "KEEP_LAST": "Keep only the last N samples (default depth=1). Warning: depth=1 means only the most recent sample is kept!",
+      "KEEP_ALL": "Keep all samples until acknowledged. Required when multiple samples must be delivered to late joiners."
+    }
+  },
+  "exceptions": {
+    "TimeoutError": "dds.TimeoutError - Raised when a DDS operation exceeds its timeout. Catch this when using receive_replies() or wait_for_acknowledgments()."
+  },
+  "dynamic_types": {
+    "description": "Create DDS types dynamically without IDL or @idl.struct.",
+    "pattern": "hello_type = dds.StructType('HelloWorld')\nhello_type.add_member(dds.Member(name='msg', data_type=dds.StringType(256)))\nhello_type.add_member(dds.Member(name='count', data_type=dds.Int32Type()))\ntopic = dds.DynamicData.Topic(participant, 'HelloWorld', hello_type)"
+  }
+}

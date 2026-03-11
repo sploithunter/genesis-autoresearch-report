@@ -1,0 +1,44 @@
+{
+  "patterns": {
+    "rpc_requester": {
+      "category": "rpc",
+      "description": "Complete RPC Requester pattern using rti.rpc module",
+      "code": "import rti.connextdds as dds\nimport rti.types as idl\nfrom rti.rpc import Requester\nimport json, time, argparse\n\n# 1. Define request/reply types with @idl.struct\n@idl.struct(\n    member_annotations={\n        'operation': [idl.bound(64)],\n    }\n)\nclass MyRequest:\n    operation: str = \"\"\n    x: int = 0\n    y: int = 0\n\n@idl.struct(\n    member_annotations={\n        'error': [idl.bound(256)],\n    }\n)\nclass MyReply:\n    result: int = 0\n    success: bool = False\n    error: str = \"\"\n\n# 2. Create participant and requester\nparticipant = dds.DomainParticipant(0)\nrequester = Requester(\n    request_type=MyRequest,\n    reply_type=MyReply,\n    participant=participant,\n    service_name=\"MyService\"\n)\n\n# 3. Wait for service discovery\nstart = time.time()\nwhile requester.matched_replier_count == 0:\n    if time.time() - start > 5:\n        print(json.dumps({\"result\": 0, \"success\": False, \"error\": \"Service not found\"}))\n        exit(1)\n    time.sleep(0.1)\n\n# 4. Send request and receive reply\nrequest = MyRequest(operation=\"add\", x=10, y=5)\nrequest_id = requester.send_request(request)\n\ntry:\n    replies = requester.receive_replies(\n        max_wait=dds.Duration(seconds=5),\n        related_request_id=request_id\n    )\nexcept dds.TimeoutError:\n    print(json.dumps({\"result\": 0, \"success\": False, \"error\": \"No reply received\"}))\n    exit(1)\n\nif len(replies) > 0 and replies[0].info.valid:\n    reply = replies[0].data\n    print(json.dumps({\"result\": reply.result, \"success\": reply.success}))\nelse:\n    print(json.dumps({\"result\": 0, \"success\": False, \"error\": \"Invalid reply\"}))"
+    },
+    "guid_formatting": {
+      "category": "discovery",
+      "description": "Format a DDS BuiltinTopicKey as a human-readable GUID string",
+      "code": "import struct\n\ndef format_guid(key):\n    \"\"\"Format a BuiltinTopicKey as a GUID string.\n    \n    Args:\n        key: BuiltinTopicKey with .value attribute (tuple of 4 uint32)\n    \n    Returns:\n        String like 'xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx.xx|x.x.x.xx'\n    \"\"\"\n    raw = key.value  # tuple of 4 unsigned 32-bit integers\n    all_bytes = []\n    for v in raw:\n        all_bytes.extend(struct.pack('>I', v))  # Big-endian\n    prefix = '.'.join(f'{b:02x}' for b in all_bytes[:12])\n    entity = '.'.join(f'{b:x}' for b in all_bytes[12:16])\n    return f'{prefix}|{entity}'"
+    },
+    "discovery_publication_guid": {
+      "category": "discovery",
+      "description": "Get the publisher's GUID from a received sample using matched_publication_data",
+      "code": "# After receiving a sample from a DataReader:\nfor sample in reader.take():\n    if sample.info.valid:\n        # Get the publication handle (identifies the source DataWriter)\n        pub_handle = sample.info.publication_handle\n        \n        # Look up the publication data for that handle\n        try:\n            pub_data = reader.matched_publication_data(pub_handle)\n            guid_str = format_guid(pub_data.key)\n            print(f'Publisher GUID: {guid_str}')\n        except Exception:\n            pass  # Handle can become invalid if publisher disconnects"
+    },
+    "discovery_subscription_guid": {
+      "category": "discovery",
+      "description": "Discover subscriber GUIDs using writer's matched_subscriptions or built-in topics",
+      "code": "# Method 1: Using DataWriter's matched_subscriptions\nfor sub_handle in writer.matched_subscriptions:\n    try:\n        sub_data = writer.matched_subscription_data(sub_handle)\n        guid_str = format_guid(sub_data.key)\n        print(f'Subscriber GUID: {guid_str}')\n    except Exception:\n        pass\n\n# Method 2: Using built-in DCPSSubscription topic\nfor sample in participant.subscription_reader.take():\n    if sample.info.valid:\n        if sample.data.topic_name == 'MyTopic':  # Filter by topic name\n            guid_str = format_guid(sample.data.key)\n            print(f'Discovered subscriber GUID: {guid_str}')"
+    },
+    "transient_local_durability": {
+      "category": "qos",
+      "description": "Configure TRANSIENT_LOCAL durability with RELIABLE delivery and KEEP_ALL history for late-joiner support",
+      "code": "import rti.connextdds as dds\n\n# Writer QoS - ALL THREE settings are required for late-joiner support\nwriter_qos = dds.DataWriterQos()\nwriter_qos.durability.kind = dds.DurabilityKind.TRANSIENT_LOCAL\nwriter_qos.reliability.kind = dds.ReliabilityKind.RELIABLE\nwriter_qos.history.kind = dds.HistoryKind.KEEP_ALL\n\n# Reader QoS - must be compatible with writer\nreader_qos = dds.DataReaderQos()\nreader_qos.durability.kind = dds.DurabilityKind.TRANSIENT_LOCAL\nreader_qos.reliability.kind = dds.ReliabilityKind.RELIABLE\nreader_qos.history.kind = dds.HistoryKind.KEEP_ALL\n\n# IMPORTANT: After publishing, wait for acknowledgments using DDS mechanism (not sleep!)\n# writer.wait_for_acknowledgments(dds.Duration(seconds=30))"
+    },
+    "wait_for_acknowledgments": {
+      "category": "qos",
+      "description": "Wait for readers to acknowledge receipt of all written samples (DDS mechanism, not a timing hack)",
+      "code": "# After writing all samples, wait for acknowledgments\ntry:\n    writer.wait_for_acknowledgments(dds.Duration(seconds=30))\nexcept dds.TimeoutError:\n    pass  # No readers matched, exit cleanly\n\n# This is a DDS mechanism, NOT a timing hack like time.sleep().\n# It blocks until all matched readers have acknowledged receipt.\n# Use this instead of sleep() to ensure late joiners receive data."
+    },
+    "reliable_keep_all": {
+      "category": "qos",
+      "description": "Configure RELIABLE delivery with KEEP_ALL history (required when all samples matter)",
+      "code": "# For DataWriter:\nwriter_qos = dds.DataWriterQos()\nwriter_qos.reliability.kind = dds.ReliabilityKind.RELIABLE\nwriter_qos.history.kind = dds.HistoryKind.KEEP_ALL\n\n# For DataReader:\nreader_qos = dds.DataReaderQos()\nreader_qos.reliability.kind = dds.ReliabilityKind.RELIABLE\nreader_qos.history.kind = dds.HistoryKind.KEEP_ALL\n\n# WARNING: KEEP_LAST with depth=1 (the default) only keeps the most\n# recent sample! If you need ALL samples delivered, use KEEP_ALL."
+    },
+    "content_filtered_topic": {
+      "category": "filtering",
+      "description": "Create a content-filtered topic to receive only matching samples",
+      "code": "# Create a content filter on a topic\nfiltered_topic = dds.ContentFilteredTopic(\n    topic,\n    'MyFilteredTopic',\n    dds.Filter(\"field_name = %0\", [\"'target_value'\"])\n)\n\n# Create reader on the filtered topic\nreader = dds.DataReader(subscriber, filtered_topic)"
+    }
+  }
+}

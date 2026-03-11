@@ -1,0 +1,67 @@
+{
+  "module": "rti.rpc",
+  "classes": {
+    "Requester": {
+      "description": "RPC Requester for sending requests and receiving replies via DDS.",
+      "import": "from rti.rpc import Requester",
+      "constructor": {
+        "signature": "Requester(request_type, reply_type, participant, service_name)",
+        "parameters": {
+          "request_type": "The @idl.struct decorated class for requests",
+          "reply_type": "The @idl.struct decorated class for replies",
+          "participant": "A dds.DomainParticipant instance",
+          "service_name": "String name of the service to connect to"
+        },
+        "example": "requester = Requester(request_type=MyRequest, reply_type=MyReply, participant=participant, service_name=\"MyService\")"
+      },
+      "methods": {
+        "send_request": {
+          "signature": "send_request(request) -> request_id",
+          "description": "Sends a request and returns a request_id for correlation with replies.",
+          "returns": "A request_id object used with receive_replies()",
+          "example": "request_id = requester.send_request(my_request)"
+        },
+        "receive_replies": {
+          "signature": "receive_replies(max_wait, related_request_id) -> list[ReplySample]",
+          "description": "Waits for replies correlated to a specific request_id.",
+          "parameters": {
+            "max_wait": "dds.Duration instance, e.g. dds.Duration(seconds=5)",
+            "related_request_id": "The request_id returned by send_request()"
+          },
+          "returns": "List of reply samples. Each sample has .info and .data attributes.",
+          "exception": "Raises dds.TimeoutError if no replies arrive within max_wait.",
+          "example": "try:\n    replies = requester.receive_replies(max_wait=dds.Duration(seconds=5), related_request_id=request_id)\nexcept dds.TimeoutError:\n    print('No reply received')"
+        }
+      },
+      "properties": {
+        "matched_replier_count": {
+          "type": "int",
+          "description": "Number of repliers currently matched (discovered) by this requester. Use in a polling loop to wait for service discovery.",
+          "example": "while requester.matched_replier_count == 0:\n    time.sleep(0.1)"
+        }
+      }
+    },
+    "Replier": {
+      "description": "RPC Replier for receiving requests and sending replies via DDS.",
+      "import": "from rti.rpc import Replier",
+      "constructor": {
+        "signature": "Replier(request_type, reply_type, participant, service_name, handler=None)",
+        "parameters": {
+          "request_type": "The @idl.struct decorated class for requests",
+          "reply_type": "The @idl.struct decorated class for replies",
+          "participant": "A dds.DomainParticipant instance",
+          "service_name": "String name of the service",
+          "handler": "Optional callable that processes requests"
+        }
+      }
+    }
+  },
+  "reply_sample_access": {
+    "description": "Reply samples returned by receive_replies() have two key attributes.",
+    "attributes": {
+      "info": "SampleInfo with metadata. Check info.valid before accessing data.",
+      "data": "The actual reply data (instance of the reply_type class)."
+    },
+    "pattern": "for reply_sample in replies:\n    if reply_sample.info.valid:\n        reply_data = reply_sample.data\n        # Access fields: reply_data.result, reply_data.success, etc."
+  }
+}

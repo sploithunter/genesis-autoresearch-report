@@ -1,0 +1,52 @@
+{
+  "errors": {
+    "AttributeError: module 'rti.rpc' has no attribute 'Client'": {
+      "cause": "The class is called Requester, not Client.",
+      "fix": "Use `from rti.rpc import Requester` and create `Requester(request_type=..., reply_type=..., participant=..., service_name=...)`"
+    },
+    "AttributeError: 'Requester' object has no attribute 'is_service_available'": {
+      "cause": "There is no is_service_available() method. Use the matched_replier_count property instead.",
+      "fix": "Poll `requester.matched_replier_count > 0` in a loop with small sleep intervals."
+    },
+    "AttributeError: 'Requester' object has no attribute 'wait_for_replies'": {
+      "cause": "The method is called receive_replies, not wait_for_replies.",
+      "fix": "Use `requester.receive_replies(max_wait=dds.Duration(seconds=5), related_request_id=request_id)`"
+    },
+    "AttributeError: 'Requester' object has no attribute 'take_replies'": {
+      "cause": "The method is called receive_replies, not take_replies.",
+      "fix": "Use `requester.receive_replies(max_wait=dds.Duration(seconds=5), related_request_id=request_id)`"
+    },
+    "TypeError: Requester() takes no arguments": {
+      "cause": "Requester requires named keyword arguments.",
+      "fix": "Use `Requester(request_type=MyReq, reply_type=MyRep, participant=p, service_name='svc')`"
+    },
+    "idl.dataclass is not defined": {
+      "cause": "There is no @idl.dataclass decorator. Use @idl.struct instead.",
+      "fix": "Replace @idl.dataclass with @idl.struct. Use member_annotations for bounded strings."
+    },
+    "idl.StringType is not defined": {
+      "cause": "String bounds are specified via member_annotations, not StringType.",
+      "fix": "Use @idl.struct(member_annotations={'field_name': [idl.bound(64)]}) with native str type."
+    },
+    "idl.int32 is not defined": {
+      "cause": "Use native Python int type, not idl.int32.",
+      "fix": "Replace `idl.int32` with `int` in your @idl.struct class fields."
+    },
+    "Late joiner receives 0 or 1 samples instead of all": {
+      "cause": "Missing one or more of: TRANSIENT_LOCAL durability, RELIABLE reliability, or KEEP_ALL history. Default KEEP_LAST depth=1 only stores the latest sample.",
+      "fix": "Set ALL THREE on both writer and reader: durability=TRANSIENT_LOCAL, reliability=RELIABLE, history=KEEP_ALL. Also use writer.wait_for_acknowledgments() instead of time.sleep()."
+    },
+    "Subscriber misses data when starting after publisher": {
+      "cause": "VOLATILE durability means the writer does not cache samples for late joiners.",
+      "fix": "Change durability to TRANSIENT_LOCAL on both writer and reader. Also set RELIABLE reliability and KEEP_ALL history."
+    },
+    "publisher_guid field is empty or missing": {
+      "cause": "GUID extraction from publication_handle requires a two-step process.",
+      "fix": "1) Get handle: pub_handle = sample.info.publication_handle\n2) Look up data: pub_data = reader.matched_publication_data(pub_handle)\n3) Format GUID: format_guid(pub_data.key) using struct.pack on the key.value tuple"
+    },
+    "AttributeError: 'Subscriber' object has no attribute 'lookup_datareader'": {
+      "cause": "Built-in topic readers are accessed from the participant, not the subscriber.",
+      "fix": "Use participant.subscription_reader for DCPSSubscription built-in topic."
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "module": "rti.types",
+  "alias": "import rti.types as idl",
+  "decorators": {
+    "@idl.struct": {
+      "description": "Decorator for defining DDS data types as Python classes. This is the REQUIRED decorator for DDS type definitions in the modern Python API.",
+      "usage": "@idl.struct or @idl.struct(member_annotations={...})",
+      "important_notes": [
+        "Use native Python types (str, int, float, bool) for fields, NOT idl.int32 or idl.StringType",
+        "All fields MUST have default values",
+        "String fields that need bounded length use member_annotations with idl.bound(N)",
+        "Do NOT use @idl.dataclass - it does not exist in this API"
+      ],
+      "basic_example": "@idl.struct\nclass MyType:\n    name: str = \"\"\n    value: int = 0\n    active: bool = False",
+      "bounded_string_example": "@idl.struct(\n    member_annotations={\n        'name': [idl.bound(64)],\n        'description': [idl.bound(256)],\n    }\n)\nclass MyType:\n    name: str = \"\"\n    description: str = \"\"\n    value: int = 0",
+      "common_mistakes": [
+        "Using @idl.dataclass instead of @idl.struct",
+        "Using idl.int32 instead of native int",
+        "Using idl.StringType(64) instead of member_annotations with idl.bound(64)",
+        "Using idl.bounded_str[64] instead of member_annotations with idl.bound(64)",
+        "Forgetting default values for fields",
+        "Putting bound() on non-string fields (only strings need bounds)"
+      ]
+    }
+  },
+  "functions": {
+    "idl.bound": {
+      "description": "Specifies the maximum length for a bounded string field. Used inside member_annotations.",
+      "signature": "idl.bound(max_length: int)",
+      "usage": "member_annotations={'field_name': [idl.bound(64)]}",
+      "note": "Only needed for string fields. Integer, float, and bool fields do not need bounds."
+    }
+  }
+}

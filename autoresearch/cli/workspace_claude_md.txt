@@ -1,0 +1,71 @@
+# DDS Development Tools
+
+You have access to DDS development reference tools provided by Genesis services.
+When working with RTI Connext DDS Python APIs, **always use these tools** to look up
+correct API signatures, code patterns, and QoS settings before writing code.
+
+## How to Use
+
+Run this command to query the DDS tools:
+
+```bash
+python {GENESIS_DDS_TOOL_PATH} --function FUNCTION_NAME --args '{{"param": "value"}}'
+```
+
+## Available Functions
+
+### API Reference
+- **lookup_api** - Look up RTI Connext Python API signatures
+  ```bash
+  python {GENESIS_DDS_TOOL_PATH} --function lookup_api --args '{{"module": "rti.rpc", "class_name": "Requester"}}'
+  python {GENESIS_DDS_TOOL_PATH} --function lookup_api --args '{{"module": "rti.rpc", "class_name": "Requester", "method_name": "receive_replies"}}'
+  python {GENESIS_DDS_TOOL_PATH} --function lookup_api --args '{{"module": "rti.types", "class_name": "@idl.struct"}}'
+  python {GENESIS_DDS_TOOL_PATH} --function lookup_api --args '{{"module": "rti.connextdds", "class_name": "DataWriter"}}'
+  ```
+
+- **lookup_type_definition** - Get DDS type definition patterns
+  ```bash
+  python {GENESIS_DDS_TOOL_PATH} --function lookup_type_definition --args '{{"approach": "idl_struct"}}'
+  ```
+
+- **list_module_apis** - List what's available in an RTI module
+  ```bash
+  python {GENESIS_DDS_TOOL_PATH} --function list_module_apis --args '{{"module": "rti.rpc"}}'
+  ```
+
+### Code Patterns
+- **get_pattern** - Get verified, working DDS code patterns
+  ```bash
+  python {GENESIS_DDS_TOOL_PATH} --function get_pattern --args '{{"pattern_name": "rpc_requester"}}'
+  python {GENESIS_DDS_TOOL_PATH} --function get_pattern --args '{{"pattern_name": "guid_formatting"}}'
+  python {GENESIS_DDS_TOOL_PATH} --function get_pattern --args '{{"pattern_name": "transient_local_durability"}}'
+  ```
+
+- **list_patterns** - List available code patterns
+  ```bash
+  python {GENESIS_DDS_TOOL_PATH} --function list_patterns --args '{{"category": "rpc"}}'
+  ```
+
+### QoS Configuration
+- **get_qos_recipe** - Get QoS settings for specific goals
+  ```bash
+  python {GENESIS_DDS_TOOL_PATH} --function get_qos_recipe --args '{{"goal": "late_joiner"}}'
+  python {GENESIS_DDS_TOOL_PATH} --function get_qos_recipe --args '{{"goal": "reliable_delivery"}}'
+  ```
+
+### Error Diagnosis
+- **diagnose_error** - Diagnose DDS error messages
+  ```bash
+  python {GENESIS_DDS_TOOL_PATH} --function diagnose_error --args '{{"error_message": "YOUR ERROR HERE"}}'
+  ```
+
+- **check_qos_compatibility** - Check if QoS settings are compatible
+  ```bash
+  python {GENESIS_DDS_TOOL_PATH} --function check_qos_compatibility --args '{{"writer_qos": "TRANSIENT_LOCAL, RELIABLE", "reader_qos": "VOLATILE, BEST_EFFORT"}}'
+  ```
+
+## Tips
+- Always look up the API before using RTI DDS classes you haven't used before
+- Use get_pattern for complete working examples of common DDS patterns
+- Use get_qos_recipe when configuring QoS for specific scenarios
+- Use diagnose_error when you encounter errors to get specific fixes
