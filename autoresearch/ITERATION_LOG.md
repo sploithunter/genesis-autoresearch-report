@@ -1276,3 +1276,24 @@ Clean 3/3 pass. LQ-01 fastest ever at 92.0s. LD-07 bounced back after 2 recent f
 **Cost efficiency:** Avg $0.018/iteration (3 tasks). Haiku+tools ~10x cheaper than Opus+tools.
 
 ---
+
+## Haiku Iteration 31
+
+| Task | Result | Time | Cost | Iterations |
+|------|--------|------|------|------------|
+| LR-01 | **PASS** | 67.9s | $0.0056 | 1 |
+| LD-07 | **PASS** | 314.1s | $0.0086 | 2 |
+| LQ-01 | **PASS** | 172.3s | $0.0042 | 1 |
+
+LD-07 took 2 iterations (314s) with many Exit code 1 errors but ultimately passed. Consecutive streak: 3.
+
+**Overall: 96% (84/88).**
+
+| Task | Baseline | With Tools | Consecutive |
+|------|----------|-----------|-------------|
+| LR-01 | **0% (0/3)** | **100% (25/25)** | 25 |
+| LD-07 | **0% (0/3)** | **94% (29/31)** | 3 |
+| LQ-01 | 100% (3/3) | **96% (24/25)** | 24 |
+| **Overall** | **33%** | **95% (84/88)** | 3 |
+
+---
