@@ -1,0 +1,91 @@
+{
+  "iteration": 8,
+  "timestamp": "2026-03-11T01:00:41.913855",
+  "control": [],
+  "treatment": [
+    {
+      "task": "LD-07_discovery_guid_mining",
+      "with_genesis": true,
+      "success": true,
+      "elapsed": 131.66760087013245,
+      "result_file": "/Users/jason/Documents/harness-bench/results/dds_benchmark_claude-sub_opus_20260311_010302.json",
+      "details": {
+        "benchmark": "dds",
+        "harness": "claude-sub",
+        "harness_version": "1.0.0",
+        "model": "opus",
+        "model_name": "opus",
+        "timestamp": "2026-03-11T01:03:02.782974",
+        "config": {
+          "timeout_s": 300,
+          "max_iterations": 5,
+          "workers": 1,
+          "mcp_enabled": false,
+          "no_append_prompt": false,
+          "reasoning_effort": null
+        },
+        "total_tasks": 1,
+        "all_tasks_count": 13,
+        "passed": 1,
+        "failed": 0,
+        "pass_rate": 100.0,
+        "total_elapsed_s": 131.6,
+        "total_cost_usd": 0.0636,
+        "avg_cost_per_task_usd": 0.0636,
+        "tasks": [
+          {
+            "task": "LD-07_discovery_guid_mining",
+            "success": true,
+            "iterations": 1,
+            "elapsed": 131.5,
+            "cost_usd": 0.0636
+          }
+        ]
+      },
+      "stdout": "l: opus\n[01:00:51] [INFO] === ITERATION 1/5 === (remaining: 300s)\n[01:00:51] [INFO] Building prompt...\n[01:00:51] [INFO] Prompt length: 12108 chars\n[01:00:51] [INFO] Running claude-code-subscription (timeout: 300s)...\n[01:00:51] [INFO] Command: claude --dangerously-skip-permissions --permission-mode=bypassPermissions --model opus... (hooks in .harness_hooks_settings.json)\n[01:00:51] [INFO] Created tmux session: harness-bench-64eedda6\n[01:00:51] [INFO] Starting Claude with runner script (cmd length: 704)\n[01:00:51] [INFO] Started Claude Code with prompt\n[01:01:21] [INFO] Still running... (30s elapsed)\n[01:01:52] [INFO] Still running... (61s elapsed)\n[01:02:36] [INFO] Completion signal received from hooks\n[01:02:36] [INFO] tmux session harness-bench-64eedda6 status: exists\n[01:02:36] [INFO] Conversation log saved: .claude_conversation_iter1.txt (17446 chars)\n[01:02:36] [INFO] Copied transcript: .claude_transcript_69bb6b59-3ea5-46b0-8d75-bb9978647e3c.jsonl\n[01:02:36] [INFO] Token usage: input=1, output=139, cache_write=497, cache_read=29215\n[01:02:36] [INFO] Calculated cost: $0.0636 (model=opus)\n[01:02:36] [INFO] Killed tmux session: harness-bench-64eedda6\n[01:02:36] [INFO] claude-code-subscription finished: completed, elapsed=105.4s\n[01:02:36] [INFO] Checking for file changes...\n[01:02:36] [INFO] Files changed: True\n[01:02:36] [INFO] Running verification...\n[01:02:36] [INFO] Running: python verify.py (timeout: 300s)\n[01:03:02] [INFO] Verification result: success=True, score=1.0\n[01:03:02] [INFO] Verification finished: elapsed=26.1s\n[01:03:02] [SUCCESS] VERIFICATION PASSED! Total time: 131.5s\n[01:03:02] [INFO] Result JSON: LD-07_discovery_guid_mining_claude-opus-4-5-20251101_2026-03-11T01-03-02.778095.json\n[PASS] LD-07_discovery_guid_mining: 1 iters, 131.5s, $0.0636\n------------------------------------------------------------\nResults: 1/1 passed (100.0%)\nTotal time: 131.6s\nTotal cost: $0.0636\nResults saved to: results/dds_benchmark_claude-sub_opus_20260311_010302.json\n",
+      "stderr": ""
+    },
+    {
+      "task": "LQ-01_late_joiner_durability",
+      "with_genesis": true,
+      "success": true,
+      "elapsed": 195.44289088249207,
+      "result_file": "/Users/jason/Documents/harness-bench/results/dds_benchmark_claude-sub_opus_20260311_010618.json",
+      "details": {
+        "benchmark": "dds",
+        "harness": "claude-sub",
+        "harness_version": "1.0.0",
+        "model": "opus",
+        "model_name": "opus",
+        "timestamp": "2026-03-11T01:06:18.225778",
+        "config": {
+          "timeout_s": 300,
+          "max_iterations": 5,
+          "workers": 1,
+          "mcp_enabled": false,
+          "no_append_prompt": false,
+          "reasoning_effort": null
+        },
+        "total_tasks": 1,
+        "all_tasks_count": 13,
+        "passed": 1,
+        "failed": 0,
+        "pass_rate": 100.0,
+        "total_elapsed_s": 195.4,
+        "total_cost_usd": 0.0671,
+        "avg_cost_per_task_usd": 0.0671,
+        "tasks": [
+          {
+            "task": "LQ-01_late_joiner_durability",
+            "success": true,
+            "iterations": 1,
+            "elapsed": 195.3,
+            "cost_usd": 0.0671
+          }
+        ]
+      },
+      "stdout": ": opus\n[01:03:02] [INFO] === ITERATION 1/5 === (remaining: 300s)\n[01:03:02] [INFO] Building prompt...\n[01:03:02] [INFO] Prompt length: 3728 chars\n[01:03:02] [INFO] Running claude-code-subscription (timeout: 300s)...\n[01:03:02] [INFO] Command: claude --dangerously-skip-permissions --permission-mode=bypassPermissions --model opus... (hooks in .harness_hooks_settings.json)\n[01:03:02] [INFO] Created tmux session: harness-bench-904d62df\n[01:03:02] [INFO] Starting Claude with runner script (cmd length: 704)\n[01:03:02] [INFO] Started Claude Code with prompt\n[01:03:33] [INFO] Still running... (30s elapsed)\n[01:04:03] [INFO] Still running... (61s elapsed)\n[01:05:36] [INFO] Completion signal received from hooks\n[01:05:36] [INFO] tmux session harness-bench-904d62df status: exists\n[01:05:36] [INFO] Conversation log saved: .claude_conversation_iter1.txt (10375 chars)\n[01:05:36] [INFO] Copied transcript: .claude_transcript_c31f3ce1-d0fb-492a-b415-53865ce09e54.jsonl\n[01:05:36] [INFO] Token usage: input=1, output=249, cache_write=519, cache_read=25774\n[01:05:36] [INFO] Calculated cost: $0.0671 (model=opus)\n[01:05:36] [INFO] Killed tmux session: harness-bench-904d62df\n[01:05:36] [INFO] claude-code-subscription finished: completed, elapsed=153.9s\n[01:05:36] [INFO] Checking for file changes...\n[01:05:36] [INFO] Files changed: True\n[01:05:36] [INFO] Running verification...\n[01:05:36] [INFO] Running: python verify.py (timeout: 300s)\n[01:06:18] [INFO] Verification result: success=True, score=1.0\n[01:06:18] [INFO] Verification finished: elapsed=41.3s\n[01:06:18] [SUCCESS] VERIFICATION PASSED! Total time: 195.3s\n[01:06:18] [INFO] Result JSON: LQ-01_late_joiner_durability_claude-opus-4-5-20251101_2026-03-11T01-06-18.218003.json\n[PASS] LQ-01_late_joiner_durability: 1 iters, 195.3s, $0.0671\n------------------------------------------------------------\nResults: 1/1 passed (100.0%)\nTotal time: 195.4s\nTotal cost: $0.0671\nResults saved to: results/dds_benchmark_claude-sub_opus_20260311_010618.json\n",
+      "stderr": ""
+    }
+  ]
+}
