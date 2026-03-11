@@ -150,9 +150,16 @@ With 32 consecutive perfect 2/2 passes (64 individual task passes), the probabil
 
 The effect is not subtle — it's a complete transformation of task reliability.
 
-## Next Steps
+## Phase 2: Haiku Experiment (In Progress)
 
-- **Haiku test:** Run the same tools with Claude Haiku to prove they encode genuinely useful knowledge
+**Hypothesis:** The same Genesis tools that raised Opus from 33% → 97% can help Haiku — a much smaller, cheaper model — pass these hard DDS tasks.
+
+If a smaller model can pass with the same tools, it proves the tools encode genuinely useful domain knowledge, not just a complement to Opus's existing reasoning capabilities. This is the strongest possible validation of the Genesis tool service pattern.
+
+**Status:** Running Haiku baseline (no Genesis tools) to establish solo pass rates. Treatment iterations with Genesis tools will follow.
+
+## Future Work
+
 - **Ablation study:** Disable one service at a time to measure individual contribution
 - **Cross-task generalization:** Test on DDS tasks outside the original 3
 - **Cost optimization:** The tools already reduce cost 61% — can we go further?
